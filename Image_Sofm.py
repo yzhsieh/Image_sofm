@@ -220,7 +220,7 @@ def train_gray(radius, lr, tc):
         lr = lr0 * math.exp(-times/tc)
         radius = MAPradius * math.exp(-times/tc)
         print("Saving node model.....")
-        save_model('./test')
+        save_model('./new_model.txt')
         # print('\a',end='',flush=True)
 
 

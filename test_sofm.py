@@ -246,5 +246,6 @@ if __name__ == '__main__':
     # cal_node_similiarity()
     test('./168087.jpg')
     test('./326050.jpg')
+    test('./618013.jpg')
     # save2pic(5,5)
     # train_gray()

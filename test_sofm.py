@@ -11,11 +11,12 @@ from operator import attrgetter
 from numba import autojit
 
 ### parameters
-featureNUM = 256
+featureNUM = 256 * 4 
 nodeNUM = 400
 output_path = './output/'
-model_path = './model.txt'
+model_path = './model_RGBG.txt'
 db_path = './CorelDB2/'
+input_path = './RGB_gray_feature.txt'
 ### global variables
 node_list = list()
 input_list = list()
@@ -50,6 +51,7 @@ class node():
 
     def get_distance(self,dist_list):
         rnt = 0
+        # print("DEBUG : len of dist_list = {}, weight = {}".format(len(dist_list),len(self.weight)))
         for i in range(featureNUM):
             rnt += (dist_list[i] - self.weight[i])**2
         rnt = rnt ** 0.5
@@ -108,11 +110,12 @@ def init():
         pos += 1
 
     ## initialize inputs
-    file = open('./gray_feature.txt','r')
+    file = open(input_path,'r')
     raw = json.load(file)
     for cate in raw:
         for img in raw[cate]:
-            tmp = inputImage([a/255 for a in raw[cate][img]],img,cate)
+            tmp = inputImage([a/(80*120) for a in raw[cate][img]],img,cate)
+            # print(len(tmp.weight))
             input_list.append(tmp)
             
 
@@ -142,14 +145,17 @@ def save_model():
 
 def load_model():
     print('Loading model')
-    file = open('model.txt', 'r')
+    file = open(model_path, 'r')
     tmp = csv.reader(file)
     row_count = sum(1 for row in tmp)
+    # row_featNUM = 0
     if row_count != nodeNUM:
         print("ERROR!!! number of nodes is not match")
         print("# of node in program: {},  # of node in model.txt : {}".format(nodeNUM, row_count))
-
-    file = open('model.txt', 'r')
+    # if row_featNUM != featureNUM:
+        # print("ERROR!!! number of features is not match")
+        # print("# of node in program: {},  # of node in model.txt : {}".format(nodeNUM, row_count))
+    file = open(model_path, 'r')
     for row in csv.reader(file):
         id = int(row[0])
         node_list[id].id = id
@@ -200,14 +206,7 @@ def cal_node_similiarity():
 def test(test_path):
     print("Processing test data : ", test_path[2:])
     global input_list
-    im = Image.open(test_path)
-    arr = np.array(im)
-    stat = np.zeros((256),dtype=int).tolist()
-    for i in range(arr.shape[0]):
-        for j in range(arr.shape[1]):
-            tmp = int(sum(arr[i][j]) / 3)
-            stat[tmp] += 1
-    stat = [a/(80*120) for a in stat]
+    stat = loadimg(test_path)
     BMU = cal_BMU(stat)
     print("BMU id : ",BMU.id)
     for img in input_list:
@@ -217,15 +216,35 @@ def test(test_path):
     save2pic(8, 8,'out_' + test_path[2:-4] + '.png')
     print(" - Done")
 
+def loadimg(path):
+    im = Image.open(path)
+    arr = np.array(im)
+    ### create dict
+    ### for 3 color + gray
+    stat = np.zeros((featureNUM),dtype=int).tolist()
+    for i in range(arr.shape[0]):
+        for j in range(arr.shape[1]):
+            tmp = int(sum(arr[i][j]) / 3)
+            stat[tmp] += 1
+            #R
+            tmp = arr[i][j][0]
+            stat[tmp + 256] += 1
+            #G
+            tmp = arr[i][j][1]
+            stat[tmp + 256*2] += 1
+            #B
+            tmp = arr[i][j][2]
+            stat[tmp + 256*3] += 1
+    return stat
 if __name__ == '__main__':
     print("Initialize")
     init_time = time.time()
     init()
     print(" - Done")
     load_model()
-    show_node()
+    # show_node()
     # cal_node_similiarity()
-    # test('./168087.jpg')
-    # test('./326050.jpg')
+    test('./168087.jpg')
+    test('./326050.jpg')
     # save2pic(5,5)
     # train_gray()

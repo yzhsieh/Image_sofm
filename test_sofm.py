@@ -245,20 +245,10 @@ def matching():
     for i in node_list:
         node_cluster = []
         for j in input_list:
-            if(len(node_cluster)<64):
                 node_cluster.append(j)
-                j.dis = i.get_distance(j.getWeight)
+                j.dis = i.get_distance(j.getWeight())
                 node_cluster = sorted(node_cluster, key=attrgetter('dis'))
-
-            else:
-                j.dis = i.get_distance(j.getWeight)
-                comparison = i.get_distance(node_cluster[-1].getWeight)
-                if(j.dis < comparison):
-                    node_cluster.pop()
-                    node_cluster.append(j)
-                    j.dis = i.get_distance(j.getWeight)
-                    node_cluster = sorted(node_cluster, key=attrgetter('dis'))
-        i.cluster = node_cluster
+        i.cluster = node_cluster[0:63]
 
 
 

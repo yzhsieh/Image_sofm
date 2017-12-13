@@ -71,7 +71,16 @@ class node():
         print("position : {},{}".format(self.posX,self.posY))
         print("weight : ",' , '.join([str(tmp) for tmp in self.weight]))
 
-
+    def printCluster(self,path):
+        f, axarr = plt.subplots(8,8, figsize=(10,12))
+        for i in range(8):
+            for j in range(8):
+                ptr = cluster[i*8 + j]
+                im = Image.open(db_path + ptr.cate + '/' + ptr.name)
+                axarr[i, j].imshow(np.array(im))
+                axarr[i, j].axis('off')
+                axarr[i, j].set_title(ptr.cate + '\n' + ptr.name)
+        f.savefig(path)
 
 
 def save2pic(nx, ny,path = './out.png'):
@@ -212,11 +221,12 @@ def test(test_path):
     stat = loadimg(test_path)
     BMU = cal_BMU(stat)
     print("BMU id : ",BMU.id)
-    for img in input_list:
-        img.dis = BMU.get_distance(img.getWeight())
+    # for img in input_list:
+        # img.dis = BMU.get_distance(img.getWeight())
     ## sort the intput list
-    input_list = sorted(input_list, key=attrgetter('dis'))
-    save2pic(8, 8,'out_' + test_path[2:-4] + '.png')
+    # input_list = sorted(input_list, key=attrgetter('dis'))
+    # save2pic(8, 8,'out_' + test_path[2:-4] + '.png')
+    BMU.printCluster('out_' + test_path[2:-4] + '.png')
     print(" - Done")
 
 def loadimg(path):
@@ -242,13 +252,16 @@ def loadimg(path):
 
 
 def matching():
+    global input_list
+    print("Matching")
     for i in node_list:
-        node_cluster = []
+        print("\r - now : {}/{}".format(i.id, len(node_list)),end='')
+        # node_cluster = []
         for j in input_list:
-                node_cluster.append(j)
-                j.dis = i.get_distance(j.getWeight())
-                node_cluster = sorted(node_cluster, key=attrgetter('dis'))
-        i.cluster = node_cluster[0:63]
+            j.dis = i.get_distance(j.getWeight())
+        input_list = sorted(input_list, key=attrgetter('dis'))
+        i.cluster = input_list[0:63]
+    print(" - done")
 
 
 

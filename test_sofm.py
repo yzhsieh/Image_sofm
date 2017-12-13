@@ -14,7 +14,7 @@ from numba import autojit
 featureNUM = 256 * 4 
 nodeNUM = 400
 output_path = './output/'
-model_path = './model_RGBG.txt'
+model_path = './new_model.txt'
 db_path = './CorelDB2/'
 input_path = './RGB_gray_feature.txt'
 ### global variables
@@ -277,8 +277,15 @@ if __name__ == '__main__':
     matching(input_list)
     # show_node()
     # cal_node_similiarity()
-    test('./168087.jpg')
-    test('./326050.jpg')
-    test('./618013.jpg')
+    test('./1.jpg')
+    test('./2.jpg')
+    test('./3.jpg')
+    test('./4.jpg')
+    test('./5.jpg')
+    test('./6.jpg')
+    test('./7.jpg')
+    test('./8.jpg')
+    test('./9.jpg')
+    test('./10.jpg')
     # save2pic(5,5)
     # train_gray()

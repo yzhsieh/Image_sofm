@@ -14,7 +14,7 @@ from numba import autojit
 featureNUM = 256 * 4 
 nodeNUM = 400
 output_path = './output/'
-model_path = './new_model.txt'
+model_path = './model_RGBG.txt'
 db_path = './CorelDB2/'
 input_path = './RGB_gray_feature.txt'
 ### global variables
@@ -26,6 +26,9 @@ lr0 = 0.1   # initial learning rate
 lr = 0.1   # learning rate
 length = int(nodeNUM ** 0.5)
 init_time = time.time()
+
+data_clusterNUM = 64
+same_threshold = 10
 
 
 
@@ -49,6 +52,7 @@ class node():
         self.posY = int(y)
         self.id = int(id)
         self.cluster = []
+        self.category = 0
 
     def getWeight(self):
         return self.weight
@@ -250,6 +254,16 @@ def loadimg(path):
             stat[tmp + 256*3] += 1
     return stat
 
+
+def same(list1,list2):
+    sameNUM = 0
+    for i in list1:
+        for j in list2:
+            if(i==j):
+                sameNUM = sameNUM +1
+    return sameNUM
+
+
 @autojit
 def matching(input_list):
     print("Matching")
@@ -261,8 +275,30 @@ def matching(input_list):
         for j in input_list:
             j.dis = i.get_distance(j.getWeight())
         input_list = sorted(input_list, key=attrgetter('dis'))
-        i.cluster = input_list[0:64]
-    print(" - done")
+        i.cluster = input_list[0:data_clusterNUM]
+    print(" - Matching done")
+
+    
+    print("Node matching")
+    global node_list
+
+    count = 1
+    for i in node_list:
+        i.category = count
+        count = count + 1
+
+    for i in node_list:
+        for j in node_list[i+1:]:
+            print("--Processing node {} and node {}".format(i,j))
+            sameNUM = same(i.cluster,j.cluster)
+            if(sameNUM>same_threshold):
+                '''for del_item in same_list[index1][index2]:
+                    j.cluster.remove(del_item)
+                i.cluster.extend(j.cluster)
+                j.cluster = i.cluster'''
+                i.category = min(i.category, j.category)
+                j.category = i.category
+    print(" - Done")
 
 
 

@@ -26,6 +26,9 @@ lr0 = 0.1   # initial learning rate
 lr = 0.1   # learning rate
 length = int(nodeNUM ** 0.5)
 init_time = time.time()
+
+
+
 ###
 class inputImage():
     def __init__(self,weight,name,cate):
@@ -45,6 +48,7 @@ class node():
         self.posX = int(x)
         self.posY = int(y)
         self.id = int(id)
+        self.cluster = []
 
     def getWeight(self):
         return self.weight
@@ -200,8 +204,7 @@ def cal_node_similiarity():
     # plt.show()
     
     print(' - Done')
-    
-        
+            
 
 def test(test_path):
     print("Processing test data : ", test_path[2:])
@@ -236,12 +239,38 @@ def loadimg(path):
             tmp = arr[i][j][2]
             stat[tmp + 256*3] += 1
     return stat
+
+
+def matching():
+    for i in node_list:
+        node_cluster = []
+        for j in input_list:
+            if(len(node_cluster)<64):
+                node_cluster.append(j)
+                j.dis = i.get_distance(j.getWeight)
+                node_cluster = sorted(node_cluster, key=attrgetter('dis'))
+
+            else:
+                j.dis = i.get_distance(j.getWeight)
+                comparison = i.get_distance(node_cluster[-1].getWeight)
+                if(j.dis < comparison):
+                    node_cluster.pop()
+                    node_cluster.append(j)
+                    j.dis = i.get_distance(j.getWeight)
+                    node_cluster = sorted(node_cluster, key=attrgetter('dis'))
+        i.cluster = node_cluster
+
+
+
+
+
 if __name__ == '__main__':
     print("Initialize")
     init_time = time.time()
     init()
     print(" - Done")
     load_model()
+    matching()
     # show_node()
     # cal_node_similiarity()
     test('./168087.jpg')

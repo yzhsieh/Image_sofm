@@ -75,7 +75,7 @@ class node():
         f, axarr = plt.subplots(8,8, figsize=(10,12))
         for i in range(8):
             for j in range(8):
-                ptr = cluster[i*8 + j]
+                ptr = self.cluster[i*8 + j]
                 im = Image.open(db_path + ptr.cate + '/' + ptr.name)
                 axarr[i, j].imshow(np.array(im))
                 axarr[i, j].axis('off')
@@ -250,17 +250,18 @@ def loadimg(path):
             stat[tmp + 256*3] += 1
     return stat
 
-
-def matching():
-    global input_list
+@autojit
+def matching(input_list):
     print("Matching")
+    tmptime = time.time()    
     for i in node_list:
-        print("\r - now : {}/{}".format(i.id, len(node_list)),end='')
+        print("\r - now : {}/{}   time : {}".format(i.id, len(node_list), time.time() - tmptime),end='')
+        tmptime = time.time()
         # node_cluster = []
         for j in input_list:
             j.dis = i.get_distance(j.getWeight())
         input_list = sorted(input_list, key=attrgetter('dis'))
-        i.cluster = input_list[0:63]
+        i.cluster = input_list[0:64]
     print(" - done")
 
 
@@ -273,7 +274,7 @@ if __name__ == '__main__':
     init()
     print(" - Done")
     load_model()
-    matching()
+    matching(input_list)
     # show_node()
     # cal_node_similiarity()
     test('./168087.jpg')

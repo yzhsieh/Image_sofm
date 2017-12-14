@@ -11,10 +11,11 @@ from operator import attrgetter
 from numba import autojit
 
 ### parameters
+DEBUG = 0
 featureNUM = 256 * 4 
 nodeNUM = 400
 output_path = './output/'
-model_path = './model_RGBG.txt'
+model_path = './new_model.txt'
 db_path = './CorelDB2/'
 input_path = './RGB_gray_feature.txt'
 ### global variables
@@ -41,6 +42,9 @@ class inputImage():
         self.dis = None  ## for BMU to get Images
     def getWeight(self):
         return self.weight
+    
+    def getName(self):
+        return [self.cate, self.name]
 
 
 class node():
@@ -52,7 +56,7 @@ class node():
         self.posY = int(y)
         self.id = int(id)
         self.cluster = []
-        self.category = 0
+        self.category = int(id)
 
     def getWeight(self):
         return self.weight
@@ -80,11 +84,39 @@ class node():
         for i in range(8):
             for j in range(8):
                 ptr = self.cluster[i*8 + j]
-                im = Image.open(db_path + ptr.cate + '/' + ptr.name)
+                im = Image.open(db_path + ptr[0] + '/' + ptr[1])
                 axarr[i, j].imshow(np.array(im))
                 axarr[i, j].axis('off')
-                axarr[i, j].set_title(ptr.cate + '\n' + ptr.name)
+                axarr[i, j].set_title(ptr[0] + '\n' + ptr[1])
         f.savefig(path)
+
+def printCluster(nptr,path = './out.png'):
+    id = nptr.category
+    print_list = []
+    for item in node_list:
+        if item.category == id:
+            for img in item.cluster:
+                if img not in print_list:
+                    print_list.append(img)
+    print("   - found images : {}".format(len(print_list)))
+    n = len(print_list)
+    if n > 80 :
+        nx = 12
+        ny = n//12 + 1
+    else:
+        nx = 8
+        ny = n//8 + 1
+    f, axarr = plt.subplots(nx, ny, figsize=(10,12))
+    for i in range(nx):
+        for j in range(ny):
+            if i*ny+j > len(print_list) -1:
+                break
+            ptr = print_list[i*ny + j]
+            im = Image.open(db_path + ptr[0] + '/' + ptr[1])
+            axarr[i, j].imshow(np.array(im))
+            axarr[i, j].axis('off')
+            axarr[i, j].set_title(ptr[0] + '\n' + ptr[1])
+    f.savefig(path)
 
 
 def save2pic(nx, ny,path = './out.png'):
@@ -219,6 +251,8 @@ def cal_node_similiarity():
     print(' - Done')
             
 
+
+
 def test(test_path):
     print("Processing test data : ", test_path[2:])
     global input_list
@@ -230,7 +264,8 @@ def test(test_path):
     ## sort the intput list
     # input_list = sorted(input_list, key=attrgetter('dis'))
     # save2pic(8, 8,'out_' + test_path[2:-4] + '.png')
-    BMU.printCluster('out_' + test_path[2:-4] + '.png')
+    # BMU.printCluster('out_' + test_path[2:-4] + '.png')
+    printCluster(BMU, 'out_' + test_path[2:-4] + '.png')
     print(" - Done")
 
 def loadimg(path):
@@ -254,50 +289,55 @@ def loadimg(path):
             stat[tmp + 256*3] += 1
     return stat
 
-
+@autojit
 def same(list1,list2):
     sameNUM = 0
     for i in list1:
         for j in list2:
             if(i==j):
                 sameNUM = sameNUM +1
+    # print("\n",sameNUM)
     return sameNUM
 
 
 @autojit
 def matching(input_list):
+    global node_list
     print("Matching")
     tmptime = time.time()    
     for i in node_list:
+        if DEBUG:
+            if i.id == 2:
+                break
         print("\r - now : {}/{}   time : {}".format(i.id, len(node_list), time.time() - tmptime),end='')
         tmptime = time.time()
         # node_cluster = []
         for j in input_list:
             j.dis = i.get_distance(j.getWeight())
         input_list = sorted(input_list, key=attrgetter('dis'))
-        i.cluster = input_list[0:data_clusterNUM]
-    print(" - Matching done")
+        for idx in range(data_clusterNUM):
+            i.cluster.append(input_list[idx].getName())
+    ### for debug ###
+    if DEBUG:
+        for i in node_list:
+            i.cluster = node_list[0].cluster
+    #################
+    print("\n - Matching done")
 
-    
-    print("Node matching")
-    global node_list
+    print("Node clustering")
 
-    count = 1
     for i in node_list:
-        i.category = count
-        count = count + 1
-
-    for i in node_list:
-        for j in node_list[i+1:]:
-            print("--Processing node {} and node {}".format(i,j))
+        for j in node_list[i.id+1:]:
+            if i.category == j.category:
+                continue
+            print("\r - Processing node {} and node {}".format(i.id,j.id),end='')
             sameNUM = same(i.cluster,j.cluster)
             if(sameNUM>same_threshold):
-                '''for del_item in same_list[index1][index2]:
-                    j.cluster.remove(del_item)
-                i.cluster.extend(j.cluster)
-                j.cluster = i.cluster'''
+                ti = i.category
+                tj = j.category
                 i.category = min(i.category, j.category)
                 j.category = i.category
+                print("\n change cate id : {} and {} to {}".format(ti, tj, i.category))
     print(" - Done")
 
 
@@ -305,6 +345,8 @@ def matching(input_list):
 
 
 if __name__ == '__main__':
+    if DEBUG:
+        print(">> DEBUG mode is on <<")
     print("Initialize")
     init_time = time.time()
     init()

@@ -29,7 +29,7 @@ length = int(nodeNUM ** 0.5)
 init_time = time.time()
 
 data_clusterNUM = 64
-same_threshold = 10
+same_threshold = 30
 
 
 
@@ -101,11 +101,11 @@ def printCluster(nptr,path = './out.png'):
     print("   - found images : {}".format(len(print_list)))
     n = len(print_list)
     if n > 80 :
-        nx = 12
-        ny = n//12 + 1
+        ny = 12
+        nx = n//12 + 1
     else:
-        nx = 8
-        ny = n//8 + 1
+        ny = 8
+        nx = n//8 + 1
     f, axarr = plt.subplots(nx, ny, figsize=(10,12))
     for i in range(nx):
         for j in range(ny):
@@ -115,7 +115,7 @@ def printCluster(nptr,path = './out.png'):
             im = Image.open(db_path + ptr[0] + '/' + ptr[1])
             axarr[i, j].imshow(np.array(im))
             axarr[i, j].axis('off')
-            axarr[i, j].set_title(ptr[0] + '\n' + ptr[1])
+            # axarr[i, j].set_title(ptr[0] + '\n' + ptr[1])
     f.savefig(path)
 
 

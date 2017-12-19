@@ -4,6 +4,7 @@ import csv
 import json
 from PIL import Image
 from numba import autojit
+import time
 ###
 dir_name = './CorelDB2/'
 gray_dict = {}
@@ -96,6 +97,8 @@ def load_and_turn_gray_new():
     json.dump(gray_dict, file)
     print("ALL Done!!!")
 @autojit
+
+
 def load_and_turn_RGB():
     file = open('./filename_list.txt', 'r')
     all_data = json.load(file)
@@ -137,5 +140,58 @@ def load_and_turn_RGB():
     json.dump(gray_dict, file)
     print("ALL Done!!!")
 
+def load_brutal():
+    file = open('./filename_list.txt', 'r')
+    all_data = json.load(file)
+    cnt = 1
+    for cate in all_data:
+        print("Processing : {} ({}/{})".format(cate,cnt,len(all_data)))
+        cnt += 1
+        # if cnt == 5:
+            # break
+        tmpdict = {}
+        ccnt = 1            
+        for img in all_data[cate]:
+            print("\r└─ Processing : {} ({}/{})".format(img,ccnt,len(all_data[cate])),end='')
+            ccnt += 1
+            im = Image.open(dir_name + cate + '/' + img)
+            arr = np.array(im)
+            ### create dict
+            ### for 3 color + gray
+            stat = np.zeros((256*4),dtype=int).tolist()
+            tmpR = []
+            tmpG = []
+            tmpB = []
+            tmpGray = []
+            for i in range(arr.shape[0]):
+                for j in range(arr.shape[1]):
+                    tmp = int(sum(arr[i][j]) / 3)
+                    tmpGray.append(tmp)
+                    #R
+                    tmp = arr[i][j][0]
+                    tmpR.append(tmp)
+                    #G
+                    tmp = arr[i][j][1]
+                    tmpG.append(tmp)
+                    #B
+                    tmp = arr[i][j][2]
+                    tmpB.append(tmp)
+            tmpAll = []
+            tmpAll.extend(tmpR)
+            tmpAll.extend(tmpG)
+            tmpAll.extend(tmpB)
+            tmpAll.extend(tmpGray)
+            tmpdict[img] = tmpAll * 1
+            # print(len(tmpAll))
+        gray_dict[cate] = tmpdict
+        print()
+        # print(gray_dict)
+    print("Calculate done, saving file......")
+    file = open("./all_pixel_feature.txt", 'w')
+    json.dump(gray_dict, file)
+    print("ALL Done!!!")
 if __name__ == '__main__':
-    load_and_turn_RGB()
+    init_time = time.time()
+    load_brutal()
+    print("DONE!!")
+    print("Time elapsed : {}".format(time.time() - init_time))

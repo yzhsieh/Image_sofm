@@ -29,7 +29,7 @@ length = int(nodeNUM ** 0.5)
 init_time = time.time()
 
 data_clusterNUM = 64
-same_threshold = 30
+same_threshold = 50
 
 
 
@@ -107,6 +107,7 @@ def printCluster(nptr,path = './out.png'):
         ny = 8
         nx = n//8 + 1
     f, axarr = plt.subplots(nx, ny, figsize=(10,12))
+    plt.suptitle("\n cluster ID : {}\n # of img : {}".format(id, len(print_list)),fontsize=22)
     for i in range(nx):
         for j in range(ny):
             if i*ny+j > len(print_list) -1:
@@ -264,7 +265,7 @@ def test(test_path):
     ## sort the intput list
     # input_list = sorted(input_list, key=attrgetter('dis'))
     # save2pic(8, 8,'out_' + test_path[2:-4] + '.png')
-    # BMU.printCluster('out_' + test_path[2:-4] + '.png')
+    # BMU.printCluster('self_out_' + test_path[2:-4] + '.png')
     printCluster(BMU, 'out_' + test_path[2:-4] + '.png')
     print(" - Done")
 
@@ -340,7 +341,14 @@ def matching(input_list):
                 print("\n change cate id : {} and {} to {}".format(ti, tj, i.category))
     print(" - Done")
 
-
+def printClusterinfo():
+    clslist = []
+    for it in node_list:
+        if it.category not in clslist:
+            clslist.append(it.category)
+    
+    print("Number of cluster : ",len(clslist))
+    print(','.join([str(a) for a in clslist]))
 
 
 
@@ -353,6 +361,7 @@ if __name__ == '__main__':
     print(" - Done")
     load_model()
     matching(input_list)
+    printClusterinfo()
     # show_node()
     # cal_node_similiarity()
     test('./1.jpg')

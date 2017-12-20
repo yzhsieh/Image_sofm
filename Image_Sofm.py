@@ -2,6 +2,7 @@ import random
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA 
 import PIL
 import math
 import time
@@ -18,7 +19,8 @@ inputNUM = 4
 nodeNUM = 400
 epochNUM = 300
 output_path = './output/'
-feature_path = './RGB_gray_feature.txt'
+feature_path = './all_pixel_feature.txt'
+PCAcomponentsNUM = 1024
 ###
 ### global variables
 node_list = list()
@@ -30,6 +32,7 @@ lr = lr0   # learning rate
 tc = epochNUM / math.log10(MAPradius)   #time constant (lumbda)
 length = int(nodeNUM ** 0.5)
 init_time = time.time()
+PCAlist = []
 ###
 
 
@@ -42,6 +45,11 @@ class inputImage():
     def getWeight(self):
         return self.weight
 
+    def updateWeight(self, arr):
+        if len(arr) != len(self.weight):
+            print("ERROR, length doesn't match")
+        else:
+            self.weight = arr
 
 class node():
     def __init__(self, x, y, id):
@@ -123,8 +131,9 @@ def init():
     raw = json.load(file)
     for cate in raw:
         for img in raw[cate]:
-            tmp = inputImage([a/(80*120) for a in raw[cate][img]],img,cate)
+            tmp = inputImage([a/(256) for a in raw[cate][img]],img,cate)
             input_list.append(tmp)
+            PCAlist.append([a/(256) for a in raw[cate][img]])
             
 
     ## initialize radius
@@ -220,13 +229,29 @@ def train_gray(radius, lr, tc):
         lr = lr0 * math.exp(-times/tc)
         radius = MAPradius * math.exp(-times/tc)
         print("Saving node model.....")
-        save_model('./new_model.txt')
+        save_model('./burtal_model_{}.txt'.format(times))
         # print('\a',end='',flush=True)
 
+def put_back_PCA():
+    global input_list
+    for idx in range(len(input_list)):
+        input_list[idx].updateWeight(PCAlist[idx])
+
+def myPCA():
+    global PCAlist
+    print("└─ Origin length : {}".format(len(PCAlist[0])))
+    pca=PCA(n_components=PCAcomponentsNUM)
+    PCAlist = pca.fit_transform(PCAlist)
+    print("└─ new length : {}".format(len(PCAlist[0])))
 
 if __name__ == '__main__':
     print("Initialize")
     init_time = time.time()
     init()
-    print(" - Done")
+    print("└─  Done")
+    print("Procressing PCA")
+    myPCA()
+    put_back_PCA()
+    print("└─  Done")
+    print("Start to train")
     train_gray(radius, lr, tc)

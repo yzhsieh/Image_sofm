@@ -181,7 +181,7 @@ def load_brutal():
             tmpAll.extend(tmpG)
             tmpAll.extend(tmpB)
             tmpAll.extend(tmpGray)
-            tmpdict[img] = tmpAll * 1
+            tmpdict[img] = np.array(tmpAll,dtype=int).tolist()
             # print(len(tmpAll))
         gray_dict[cate] = tmpdict
         print()
@@ -190,6 +190,8 @@ def load_brutal():
     file = open("./all_pixel_feature.txt", 'w')
     json.dump(gray_dict, file)
     print("ALL Done!!!")
+
+
 if __name__ == '__main__':
     init_time = time.time()
     load_brutal()

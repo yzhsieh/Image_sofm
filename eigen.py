@@ -5,10 +5,15 @@ import json
 from PIL import Image
 from numba import autojit
 import time
+import cv2
+### user defined libraries ###
+import SURF
 ###
 dir_name = './CorelDB2/'
 gray_dict = {}
 ###
+CVthreshold = 10000
+
 
 def PCA(data, dims_rescaled_data=2):
     """
@@ -168,18 +173,18 @@ def load_brutal():
                     tmp = int(sum(arr[i][j]) / 3)
                     tmpGray.append(tmp)
                     #R
-                    tmp = arr[i][j][0]
-                    tmpR.append(tmp)
+                    # tmp = arr[i][j][0]
+                    # tmpR.append(tmp)
                     #G
-                    tmp = arr[i][j][1]
-                    tmpG.append(tmp)
+                    # tmp = arr[i][j][1]
+                    # tmpG.append(tmp)
                     #B
-                    tmp = arr[i][j][2]
-                    tmpB.append(tmp)
+                    # tmp = arr[i][j][2]
+                    # tmpB.append(tmp)
             tmpAll = []
-            tmpAll.extend(tmpR)
-            tmpAll.extend(tmpG)
-            tmpAll.extend(tmpB)
+            # tmpAll.extend(tmpR)
+            # tmpAll.extend(tmpG)
+            # tmpAll.extend(tmpB)
             tmpAll.extend(tmpGray)
             tmpdict[img] = np.array(tmpAll,dtype=int).tolist()
             # print(len(tmpAll))
@@ -187,13 +192,52 @@ def load_brutal():
         print()
         # print(gray_dict)
     print("Calculate done, saving file......")
-    file = open("./all_pixel_feature.txt", 'w')
+    file = open("./all_pixel_gray_feature.txt", 'w')
     json.dump(gray_dict, file)
     print("ALL Done!!!")
 
-
+def load_SURF():
+    global CVthreshold
+    file = open('./filename_list.txt', 'r')
+    all_data = json.load(file)
+    cnt = 1
+    for cate in all_data:
+        print("Processing : {} ({}/{})".format(cate,cnt,len(all_data)))
+        cnt += 1
+        # if cnt == 5:
+            # break
+        tmpdict = {}
+        ccnt = 1            
+        for img in all_data[cate]:
+            CVthreshold = 10000
+            print("\r└─ Processing : {} ({}/{})".format(img,ccnt,len(all_data[cate])),end='')
+            ccnt += 1
+            tmp = SURF.SURF(dir_name + cate + '/' + img)
+            # image = cv2.imread(dir_name + cate + '/' + img)
+            # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            # surf = cv2.xfeatures2d.SURF_create(hessianThreshold=CVthreshold, upright=True, extended=False)
+            # (kps, descs) = surf.detectAndCompute(gray, None)
+            # while len(kps)<16:
+                # CVthreshold = CVthreshold - 500
+                # print("change thres to : ",CVthreshold)                
+                # surf = cv2.xfeatures2d.SURF_create(hessianThreshold=CVthreshold, upright=True, extended=False)
+                # (kps, descs) = surf.detectAndCompute(gray, None)
+            # tmp = []
+            # for idx in range(16):
+                # tmp.extend(descs[idx])
+            ### create dict
+            ### for 3 color + gray
+            tmpdict[img] = np.array(tmp,dtype=float).tolist()
+            # print(len(tmpAll))
+            gray_dict[cate] = tmpdict
+        print()
+        # print(gray_dict)
+    print("Calculate done, saving file......")
+    file = open("./SURF_feature.txt", 'w')
+    json.dump(gray_dict, file)
+    print("ALL Done!!!")
 if __name__ == '__main__':
     init_time = time.time()
-    load_brutal()
+    load_SURF()
     print("DONE!!")
     print("Time elapsed : {}".format(time.time() - init_time))

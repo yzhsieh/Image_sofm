@@ -3,7 +3,6 @@ from matplotlib import pyplot as plt
 import csv
 import json
 from PIL import Image
-from numba import autojit
 import time
 import cv2
 ### user defined libraries ###
@@ -105,7 +104,6 @@ def load_and_turn_gray_new():
     file = open("./gray_feature.txt", 'w')
     json.dump(gray_dict, file)
     print("ALL Done!!!")
-@autojit
 
 
 def load_and_turn_RGB():
@@ -261,7 +259,7 @@ def load_CNN():
     for cate in all_data:
         print("Processing : {} ({}/{})".format(cate,cnt,len(all_data)))
         cnt += 1
-        # if cnt == 5:
+        # if cnt == 3:
             # break
         tmpdict = {}
         ccnt = 1            

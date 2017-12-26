@@ -252,10 +252,6 @@ def load_SURF():
     print("ALL Done!!!")
 if __name__ == '__main__':
     init_time = time.time()
-    im = Image.open('/home/jack/Image_sofm/CorelDB2/art_antiques/435000.jpg')
-    print(im.size)
-    arr = np.array(im)
-    print(arr.shape)
     load_SURF()
     # load_brutal()
     print("DONE!!")

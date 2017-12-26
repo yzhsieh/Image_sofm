@@ -25,8 +25,8 @@ epochNUM = 300
 PCAcomponentsNUM = 1024
 output_path = './output/'
 model_path = './SURF_model_52.txt'
-db_path = './CorelDB3/'
-feature_path = './all_pixel_gray_feature.txt'
+db_path = './CorelDB2/'
+feature_path = './SURF_feature.txt'
 input_path = './SURF_feature.txt'
 data_clusterNUM = 64
 same_threshold = 50
@@ -218,9 +218,9 @@ def init_test():
     raw = json.load(file)
     for cate in raw:
         for img in raw[cate]:
-            tmp = inputImage([],img,cate)
+            tmp = inputImage([a/1 for a in raw[cate][img]],img,cate)
             input_list.append(tmp)
-            PCAlist.append([a/(256) for a in raw[cate][img]])
+            PCAlist.append([a/1 for a in raw[cate][img]])
             
 
     ## initialize radius
@@ -428,10 +428,10 @@ def put_back_PCA():
 
 def myPCA():
     global PCAlist
-    print("└─ Origin length : {}".format(len(PCAlist[0])))
+    print("Origin length : {}".format(len(PCAlist[0])))
     pca=PCA(n_components=PCAcomponentsNUM)
     PCAlist = pca.fit_transform(PCAlist)
-    print("└─ new length : {}".format(len(PCAlist[0])))
+    print("new length : {}".format(len(PCAlist[0])))
 
 
 
@@ -445,11 +445,11 @@ if __name__ == '__main__':
         print("Initialize")
         init_time = time.time()
         init_train()
-        print("└─  Done")
+        print(" - Done")
         # print("Procressing PCA")
         # myPCA()
         # put_back_PCA()
-        # print("└─  Done")
+        # print(" - Done")
         print("Start to train")
         train_gray(radius, lr, tc)
 
@@ -463,10 +463,10 @@ if __name__ == '__main__':
         init_time = time.time()
         init_test()
         print(" - Done")
-        print("Procressing PCA")
-        myPCA()
-        put_back_PCA()
-        print("└─  Done")
+        # print("Procressing PCA")
+        # myPCA()
+        # put_back_PCA()
+        # print(" - Done")
         load_model()
         matching(input_list)
         printClusterinfo()

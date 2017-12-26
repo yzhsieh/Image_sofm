@@ -250,9 +250,54 @@ def load_SURF():
     file = open("./SURF_feature.txt", 'w')
     json.dump(gray_dict, file)
     print("ALL Done!!!")
+
+
+def load_CNN():
+    global straight, land
+    all_dict = {}
+    file = open('./filename_list.txt', 'r')
+    all_data = json.load(file)
+    cnt = 1
+    for cate in all_data:
+        print("Processing : {} ({}/{})".format(cate,cnt,len(all_data)))
+        cnt += 1
+        # if cnt == 5:
+            # break
+        tmpdict = {}
+        ccnt = 1            
+        for img in all_data[cate]:
+            print("\r└─ Processing : {} ({}/{})".format(img,ccnt,len(all_data[cate])),end='')
+            ccnt += 1
+            im = Image.open(dir_name + cate + '/' + img)
+            if im.size == (80, 120): 
+                land += 1
+                im = im.transpose(Image.ROTATE_90)
+                tran = 1
+            elif im.size == (120, 80):
+                straight += 1
+                tran = 0
+            else:
+                print("WRONG size : ",im.size)
+            arr = np.array(im)
+            # print(arr.shape)
+            ### create dict
+            ### for 3 color + gray
+            # tmpdict[img] = np.array(arr,dtype=int).tolist()
+            tmpdict[img] = arr.tolist()
+            # print(len(tmpAll))
+        all_dict[cate] = tmpdict
+        print()
+        # print(gray_dict)
+    print("land = {}\nstraight = {}".format(land,straight))
+    print("Calculate done, saving file......")
+    file = open("./CNN_feature.txt", 'w')
+    json.dump(all_dict, file)
+    print("ALL Done!!!")
+
+
 if __name__ == '__main__':
     init_time = time.time()
-    load_SURF()
+    load_CNN()
     # load_brutal()
     print("DONE!!")
     print("Time elapsed : {}".format(time.time() - init_time))

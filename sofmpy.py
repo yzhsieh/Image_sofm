@@ -24,8 +24,8 @@ nodeNUM = 400
 epochNUM = 300
 PCAcomponentsNUM = 1024
 output_path = './output/'
-model_path = './burtal_model_6.txt'
-db_path = './CorelDB2/'
+model_path = './SURF_model_52.txt'
+db_path = './CorelDB3/'
 feature_path = './all_pixel_gray_feature.txt'
 input_path = './SURF_feature.txt'
 data_clusterNUM = 64
@@ -50,7 +50,7 @@ weightChangeFlag = 0
 
 
 class inputImage():
-    def __init__(self,weight,name,cate, tran):
+    def __init__(self,weight,name,cate, tran=0):
         self.weight = weight
         self.name = name
         self.cate = cate

@@ -50,11 +50,12 @@ weightChangeFlag = 0
 
 
 class inputImage():
-    def __init__(self,weight,name,cate):
+    def __init__(self,weight,name,cate, tran):
         self.weight = weight
         self.name = name
         self.cate = cate
         self.dis = None  ## for BMU to get Images
+        self.tran = tran
     def getWeight(self):
         return self.weight
     

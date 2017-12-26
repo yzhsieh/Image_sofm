@@ -14,6 +14,10 @@ gray_dict = {}
 ###
 CVthreshold = 10000
 
+### temp
+land = 0
+straight = 0
+###
 
 def PCA(data, dims_rescaled_data=2):
     """
@@ -146,6 +150,7 @@ def load_and_turn_RGB():
     print("ALL Done!!!")
 
 def load_brutal():
+    global straight, land
     file = open('./filename_list.txt', 'r')
     all_data = json.load(file)
     cnt = 1
@@ -160,6 +165,13 @@ def load_brutal():
             print("\r└─ Processing : {} ({}/{})".format(img,ccnt,len(all_data[cate])),end='')
             ccnt += 1
             im = Image.open(dir_name + cate + '/' + img)
+            if im.size == (80, 120): 
+                land += 1
+                im = im.transpose(Image.ROTATE_90)
+            elif im.size == (120, 80):
+                straight += 1
+            else:
+                print("WRONG size : ",im.size)
             arr = np.array(im)
             ### create dict
             ### for 3 color + gray
@@ -170,29 +182,31 @@ def load_brutal():
             tmpGray = []
             for i in range(arr.shape[0]):
                 for j in range(arr.shape[1]):
-                    tmp = int(sum(arr[i][j]) / 3)
-                    tmpGray.append(tmp)
+                    #Gray
+                    # tmp = int(sum(arr[i][j]) / 3)
+                    # tmpGray.append(tmp)
                     #R
-                    # tmp = arr[i][j][0]
-                    # tmpR.append(tmp)
+                    tmp = arr[i][j][0]
+                    tmpR.append(tmp)
                     #G
-                    # tmp = arr[i][j][1]
-                    # tmpG.append(tmp)
+                    tmp = arr[i][j][1]
+                    tmpG.append(tmp)
                     #B
-                    # tmp = arr[i][j][2]
-                    # tmpB.append(tmp)
+                    tmp = arr[i][j][2]
+                    tmpB.append(tmp)
             tmpAll = []
-            # tmpAll.extend(tmpR)
-            # tmpAll.extend(tmpG)
-            # tmpAll.extend(tmpB)
-            tmpAll.extend(tmpGray)
+            tmpAll.extend(tmpR)
+            tmpAll.extend(tmpG)
+            tmpAll.extend(tmpB)
+            # tmpAll.extend(tmpGray)
             tmpdict[img] = np.array(tmpAll,dtype=int).tolist()
             # print(len(tmpAll))
         gray_dict[cate] = tmpdict
         print()
         # print(gray_dict)
+    print("land = {}\nstraight = {}".format(land,straight))
     print("Calculate done, saving file......")
-    file = open("./all_pixel_gray_feature.txt", 'w')
+    file = open("./all_pixel_RGB_feature.txt", 'w')
     json.dump(gray_dict, file)
     print("ALL Done!!!")
 
@@ -238,6 +252,11 @@ def load_SURF():
     print("ALL Done!!!")
 if __name__ == '__main__':
     init_time = time.time()
+    im = Image.open('/home/jack/Image_sofm/CorelDB2/art_antiques/435000.jpg')
+    print(im.size)
+    arr = np.array(im)
+    print(arr.shape)
     load_SURF()
+    # load_brutal()
     print("DONE!!")
     print("Time elapsed : {}".format(time.time() - init_time))

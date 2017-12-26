@@ -2,6 +2,7 @@ import tensorflow
 from keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D
 from keras.models import Model
 from keras import backend as K
+from keras.datasets import mnist
 import json
 import numpy as np
 ###
@@ -9,7 +10,7 @@ d_r = 0.5
 featureNUM = 1024
 encoding_dim = 200
 db_path = './CorelDB2/'
-feature_path = './CNN_feature.txt'
+feature_path = './CNN_feature_light.txt'
 x_train = []
 x_test = []
 input_list = []
@@ -40,6 +41,7 @@ def load_feature():
     file = open(feature_path,'r')
     raw = json.load(file)
     for cate in raw:
+        print('.',end='',flush=True)
         for img in raw[cate]:
             tmp = inputImage(raw[cate][img],img,cate)
             input_list.append(tmp)
@@ -51,26 +53,52 @@ def train():
     input_img = Input(shape=(80, 120, 3))  # adapt this if using `channels_first` image data format
     # input_img = Input(shape=(28, 28, 1))  # adapt this if using `channels_first` image data format
 
-    x = Conv2D(32, (3, 3), activation='relu', padding='same')(input_img)
+    x = Conv2D(128, (3, 3), activation='relu', padding='same')(input_img)
     x = MaxPooling2D((2, 2), padding='same')(x)
-    x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
+    x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
     x = MaxPooling2D((2, 2), padding='same')(x)
-    x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+    x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
     encoded = MaxPooling2D((2, 2), padding='same')(x)
-
+    encoder = Model(input_img, encoded)
     # at this point the representation is (4, 4, 8) i.e. 128-dimensional
 
-    x = Conv2D(8, (3, 3), activation='relu', padding='same')(encoded)
+    x = Conv2D(32, (3, 3), activation='relu', padding='same')(encoded)
     x = UpSampling2D((2, 2))(x)
-    x = Conv2D(16, (3, 3), activation='relu', padding='same')(x)
+    x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
     x = UpSampling2D((2, 2))(x)
-    x = Conv2D(32, (3, 3), activation='relu')(x)
+    x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
     x = UpSampling2D((2, 2))(x)
     decoded = Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
-
     autoencoder = Model(input_img, decoded)
-    autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
 
+    decoder_layer = autoencoder.layers[-1]
+
+    # autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+    autoencoder.compile(optimizer='sgd', loss='mse')
+
+    autoencoder.fit(x_train, x_train,
+                epochs=5,
+                batch_size=64)
+    # autoencoder.fit(x=np.array(x_train), y=np.array(x_train), 
+                    # batch_size=128, epochs=5, verbose=1, callbacks=None, 
+                    # validation_split=0.0, validation_data=None, shuffle=0, class_weight=None, 
+                    # sample_weight=None, initial_epoch=0, steps_per_epoch=None, validation_steps=None)
+    decoded_imgs = autoencoder.predict(x_test)
+    
+    # print(encoded_imgs)
+    # print(encoded_imgs.shape)
+    print('-----------------')
+    print(decoded_imgs)
+    print(decoded_imgs.shape)
+
+def MNIST():
+    global x_train, x_test
+    (x_train, _), (x_test, _) = mnist.load_data()
+
+    x_train = x_train.astype('float32') / 255.
+    x_test = x_test.astype('float32') / 255.
+    x_train = np.reshape(x_train, (len(x_train), 28, 28, 1))  # adapt this if using `channels_first` image data format
+    x_test = np.reshape(x_test, (len(x_test), 28, 28, 1))  # adapt this if using `channels_first` image data format
 
 if __name__ == '__main__': 
     # MNIST()

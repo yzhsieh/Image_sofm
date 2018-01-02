@@ -1,21 +1,28 @@
 import tensorflow
 from keras.layers import Input, Dense, Conv2D, MaxPooling2D, UpSampling2D
 from keras.models import Model
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras import backend as K
 from keras.datasets import mnist
 import json
 import numpy as np
+import PIL
+from PIL import Image
+import sys
 ###
+cmd = 'train'
 d_r = 0.5
 featureNUM = 1024
 encoding_dim = 200
 db_path = './CorelDB2/'
-feature_path = './CNN_feature_light.txt'
+feature_path = './CNN_feature.txt'
+# feature_path = './CNN_feature_light.txt'
+decoded_img_path = './decoded_img/'
 x_train = []
 x_test = []
 input_list = []
 ###
-
+ACT = 'tanh'
 class inputImage():
     def __init__(self,weight,name,cate,tran=0):
         self.weight = weight
@@ -53,20 +60,20 @@ def train():
     input_img = Input(shape=(80, 120, 3))  # adapt this if using `channels_first` image data format
     # input_img = Input(shape=(28, 28, 1))  # adapt this if using `channels_first` image data format
 
-    x = Conv2D(128, (3, 3), activation='relu', padding='same')(input_img)
+    x = Conv2D(64, (3, 3), activation=ACT, padding='same')(input_img)
     x = MaxPooling2D((2, 2), padding='same')(x)
-    x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
-    x = MaxPooling2D((2, 2), padding='same')(x)
-    x = Conv2D(32, (3, 3), activation='relu', padding='same')(x)
+    # x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
+    # x = MaxPooling2D((2, 2), padding='same')(x)
+    x = Conv2D(32, (3, 3), activation=ACT, padding='same')(x)
     encoded = MaxPooling2D((2, 2), padding='same')(x)
     encoder = Model(input_img, encoded)
     # at this point the representation is (4, 4, 8) i.e. 128-dimensional
 
-    x = Conv2D(32, (3, 3), activation='relu', padding='same')(encoded)
+    x = Conv2D(32, (3, 3), activation=ACT, padding='same')(encoded)
+    # x = UpSampling2D((2, 2))(x)
+    # x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
     x = UpSampling2D((2, 2))(x)
-    x = Conv2D(64, (3, 3), activation='relu', padding='same')(x)
-    x = UpSampling2D((2, 2))(x)
-    x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+    x = Conv2D(64, (3, 3), activation=ACT, padding='same')(x)
     x = UpSampling2D((2, 2))(x)
     decoded = Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
     autoencoder = Model(input_img, decoded)
@@ -75,10 +82,17 @@ def train():
 
     # autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
     autoencoder.compile(optimizer='sgd', loss='mse')
-
+    earlystopping = EarlyStopping(monitor='loss', patience = 20, verbose=1, mode='auto')
+    checkpoint = ModelCheckpoint(filepath='./IDontKonwWhatThisIs',
+                                 verbose=1,
+                                 save_best_only=True,
+                                 # save_weights_only=True,
+                                 monitor='loss',
+                                 mode='auto')
     autoencoder.fit(x_train, x_train,
-                epochs=5,
-                batch_size=64)
+                epochs=250,
+                batch_size=64,
+                callbacks=[earlystopping,checkpoint])
     # autoencoder.fit(x=np.array(x_train), y=np.array(x_train), 
                     # batch_size=128, epochs=5, verbose=1, callbacks=None, 
                     # validation_split=0.0, validation_data=None, shuffle=0, class_weight=None, 
@@ -90,6 +104,16 @@ def train():
     print('-----------------')
     print(decoded_imgs)
     print(decoded_imgs.shape)
+    print("Saving decoded imgs")
+    idx = 1
+    for it in decoded_imgs:
+    	tmp = np.array(it)
+    	tmp = tmp*255
+    	print(tmp)
+    	tmp = np.array(tmp, dtype='uint8')
+    	img = PIL.Image.fromarray(tmp, 'RGB')
+    	img.save(decoded_img_path + '{}.jpg'.format(idx))
+    	idx += 1
 
 def MNIST():
     global x_train, x_test

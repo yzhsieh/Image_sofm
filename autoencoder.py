@@ -63,15 +63,39 @@ def load_feature():
 			# PCAlist.append([a/1 for a in raw[cate][img]])
 			x_train.append(np.array(raw[cate][img]))
 
+# def save_encoded_weight():
+# 	odict = {}
+# 	file = open(weight_path, 'w')
+# 	for it in input_list:
+# 		tmp = {it.name:it.weight}
+# 		if it.cate not in odict:
+# 			odict[it.cate] = [tmp]
+# 		else:
+# 			odict[it.cate].append(tmp)
+# 	print("Dumping to weights.txt")
+# 	json.dump(odict, file)
+
 def save_encoded_weight():
 	odict = {}
 	file = open(weight_path, 'w')
+	now = None
+	tmpdict ={}
 	for it in input_list:
-		tmp = {it.name:it.weight}
-		if it.cate not in odict:
-			odict[it.cate] = [tmp]
+		print(">>>>>>NOW cate : {}, name : {}".format(it.cate, it.name))
+		if now != it.cate:
+			if len(tmpdict) == 0:
+				print(" - initial")
+				now = it.cate
+				tmpdict[it.name] = it.weight
+			else:
+				print(" - new cate : {}".format(it.cate))
+				odict[now] = tmpdict
+				tmpdict = {}
+				now = it.cate
+				tmpdict[it.name] = it.weight
 		else:
-			odict[it.cate].append(tmp)
+			print(" - same cate")
+			tmpdict[it.name] = it.weight
 	print("Dumping to weights.txt")
 	json.dump(odict, file)
 

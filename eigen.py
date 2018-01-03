@@ -4,9 +4,9 @@ import csv
 import json
 from PIL import Image
 import time
-import cv2
+# import cv2
 ### user defined libraries ###
-import SURF
+# import SURF
 ###
 dir_name = './CorelDB2/'
 gray_dict = {}
@@ -269,14 +269,17 @@ def load_CNN():
             im = Image.open(dir_name + cate + '/' + img)
             if im.size == (80, 120): 
                 land += 1
-                im = im.transpose(Image.ROTATE_90)
+                # im = im.transpose(Image.ROTATE_90)
                 tran = 1
+                continue
             elif im.size == (120, 80):
                 straight += 1
                 tran = 0
             else:
                 print("WRONG size : ",im.size)
             arr = np.array(im)
+            arr = arr / 255
+            # print(arr)
             # print(arr.shape)
             ### create dict
             ### for 3 color + gray

@@ -18,20 +18,19 @@ from numba import cuda
 ### parameters
 cmd = "train"
 DEBUG = 0
-featureNUM = 256*4
+featureNUM = 1200
 inputNUM = 4
 nodeNUM = 400
 epochNUM = 300
-PCAcomponentsNUM = 1024
+# PCAcomponentsNUM = 1024
 output_path = './output/'
-model_path = './SURF_model_52.txt'
+model_path = './CNN_sofm_model.txt'
 db_path = './CorelDB2/'
-feature_path = './SURF_feature.txt'
-input_path = './SURF_feature.txt'
+feature_path = './weights.txt'
 data_clusterNUM = 64
 same_threshold = 50
-PCAlist = []
-PCAcomponentsNUM = 1024
+# PCAlist = []
+# PCAcomponentsNUM = 1024
 weightChangeFlag = 0
 ###
 ### global variables
@@ -214,7 +213,7 @@ def init_test():
         pos += 1
 
     ## initialize inputs
-    file = open(input_path,'r')
+    file = open(feature_path,'r')
     raw = json.load(file)
     for cate in raw:
         for img in raw[cate]:
@@ -243,7 +242,7 @@ def cal_theta(dist,t):
 def cal_sigma(t):
     return MAPradius*math.exp(-t/tc)
 
-def save_model(path = 'model.txt'):
+def save_node_model(path = 'node_model.txt'):
     file = open(path, 'w')
     for item in node_list:
         posX = str(item.posX)
@@ -252,7 +251,7 @@ def save_model(path = 'model.txt'):
         weight = '#'.join([str(a) for a in item.weight])
         file.write(id + ',' + posX + ',' + posY + ',' + weight + '\n')
 
-def load_model():
+def load_node_model():
     print('Loading model')
     file = open(model_path, 'r')
     tmp = csv.reader(file)
@@ -321,7 +320,7 @@ def train_gray(radius, lr, tc):
         lr = lr0 * math.exp(-times/tc)
         radius = MAPradius * math.exp(-times/tc)
         print("Saving node model.....")
-        save_model('./SURF_model_{}.txt'.format(times))
+        save_node_model('./CNN_model_{}.txt'.format(times))
         # print('\a',end='',flush=True)
 
 
@@ -467,7 +466,7 @@ if __name__ == '__main__':
         # myPCA()
         # put_back_PCA()
         # print(" - Done")
-        load_model()
+        load_node_model()
         matching(input_list)
         printClusterinfo()
         test('./1.jpg')

@@ -22,6 +22,7 @@ decoded_img_path = './decoded_img/'
 model_path = './model.h5'
 autoencoder_model_path = './autoencoder.h5'
 encoder_model_path = './encoder.h5'
+weight_path = './weights.txt'
 x_train = []
 x_test = []
 input_list = []
@@ -45,9 +46,9 @@ class inputImage():
 	
 	def updateWeight(self, arr):
 		global weightChangeFlag
-		if len(arr) != len(self.weight) and weightChangeFlag == 0:
-			print("Change Weight from {} to {}".format(len(self.weight), len(arr)))
-			weightChangeFlag = 1
+		# if len(arr) != len(self.weight) and weightChangeFlag == 0:
+			# print("Change Weight from {} to {}".format(len(self.weight), len(arr)))
+			# weightChangeFlag = 1
 		self.weight = arr
 
 
@@ -62,6 +63,17 @@ def load_feature():
 			# PCAlist.append([a/1 for a in raw[cate][img]])
 			x_train.append(np.array(raw[cate][img]))
 
+def save_encoded_weight():
+	odict = {}
+	file = open(weight_path, 'w')
+	for it in input_list:
+		tmp = {it.name:it.weight}
+		if it.cate not in odict:
+			odict[it.cate] = [tmp]
+		else:
+			odict[it.cate].append(tmp)
+	print("Dumping to weights.txt")
+	json.dump(odict, file)
 
 def train():
 	global loss_hist
@@ -70,23 +82,21 @@ def train():
 
 	x = Conv2D(64, (3, 3), activation=ACT, padding=PADDING)(input_img)
 	x = MaxPooling2D((2, 2), padding=PADDING)(x)
-	# x = Conv2D(64, (3, 3), activation='relu', padding=PADDING)(x)
-	# x = MaxPooling2D((2, 2), padding=PADDING)(x)
 	x = Conv2D(32, (3, 3), activation=ACT, padding=PADDING)(x)
 	x = MaxPooling2D((2, 2), padding=PADDING)(x)
 	x = Conv2D(8, (3, 3), activation=ACT, padding=PADDING)(x)
 	encoded = MaxPooling2D((2, 2), padding=PADDING)(x)
 	encoder = Model(input_img, encoded)
+
+
 	# at this point the representation is (4, 4, 8) i.e. 128-dimensional
 	x = Conv2D(8, (3, 3), activation=ACT, padding=PADDING)(encoded)
 	x = UpSampling2D((2, 2))(x)
 	x = Conv2D(32, (3, 3), activation=ACT, padding=PADDING)(x)
-	# x = UpSampling2D((2, 2))(x)
-	# x = Conv2D(64, (3, 3), activation='relu', padding=PADDING)(x)
 	x = UpSampling2D((2, 2))(x)
 	x = Conv2D(64, (3, 3), activation=ACT, padding=PADDING)(x)
 	x = UpSampling2D((2, 2))(x)
-	decoded = Conv2D(3, (3, 3), activation='tanh', padding=PADDING)(x)
+	decoded = Conv2D(3, (3, 3), activation='sigmoid', padding=PADDING)(x)
 	autoencoder = Model(input_img, decoded)
 
 	# encoded_input = Input(shape=((20,30,32)))
@@ -117,6 +127,7 @@ def train():
 		### load nodel ###
 		encoder = load_model(encoder_model_path)
 		autoencoder = load_model(autoencoder_model_path)
+		# autoencoder.compile(optimizer='sgd', loss='mse')
 
 		print(">>>>>iterNOW : {}".format(iterNOW))
 		hist = autoencoder.fit(x_train, x_train,
@@ -145,7 +156,7 @@ def MNIST():
 	x_train = np.reshape(x_train, (len(x_train), 28, 28, 1))  # adapt this if using `channels_first` image data format
 	x_test = np.reshape(x_test, (len(x_test), 28, 28, 1))  # adapt this if using `channels_first` image data format
 
-def load(save_pics = 1):
+def load(save_pics = 1, show_weight = 0):
 	# global x_train, x_test
 	# autoencoder = load_model(autoencoder_model_path)
 	autoencoder = load_model(autoencoder_model_path)
@@ -168,12 +179,37 @@ def load(save_pics = 1):
 			img.save(decoded_img_path + '{}.jpg'.format(idx))
 			idx += 1
 	print("ohhhh it seems good so far")
+	if show_weight == 1:
+		print("Start to save encode things")
+		encoder = load_model(encoder_model_path)
+		encoder.summary()
+		encoded_imgs = encoder.predict(x_test)
+		print(encoded_imgs)
+		print(encoded_imgs.shape)
+
+def save_weight():
 	print("Start to save encode things")
 	encoder = load_model(encoder_model_path)
 	encoder.summary()
-	encoded_imgs = encoder.predict(x_test)
-	print(encoded_imgs)
-	print(encoded_imgs.shape)
+	idx = 1
+	length = len(input_list)
+	for item in input_list:
+		print('\r - processing : {} ({}/{})'.format(item.name, idx, length), end='')
+		idx += 1
+		weight = item.getWeight()
+		weight = np.reshape(weight, (1 ,80,120,3))
+		rnt = encoder.predict(weight)
+		rnt = np.array(rnt, dtype=float)
+		rnt = np.round(rnt, decimals=6)
+		# print(rnt)
+		rnt = np.array(rnt, dtype=float).tolist()
+		# rnt = [ '%.6f' % a for a in rnt ]
+		# rnt = [ float(a) for a in rnt]
+		item.updateWeight(rnt)
+	print("Saving weights to file")
+	save_encoded_weight()
+
+
 if __name__ == '__main__': 
 	### init
 	if len(sys.argv) != 1:
@@ -203,7 +239,17 @@ if __name__ == '__main__':
 		print(" - done")
 		x_train = np.array(x_train)
 		x_test = np.array(x_train)
-		load(save_pics=0)
+		load(save_pics=1)
+	elif cmd == 'weight':
+		print("#################")
+		print("## Save Weight ##")
+		print("#################")
+		print("Loading feature")
+		load_feature()
+		print(" - done")
+		x_train = np.array(x_train)
+		x_test = np.array(x_train)
+		save_weight()
 	else:
 		print("ERROR!!!")
 		print("command : {} not found".format(cmd))

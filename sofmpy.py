@@ -199,7 +199,8 @@ def init_train():
             tmp = inputImage(raw[cate][img],img,cate)
             input_list.append(tmp)
             # PCAlist.append([a/(256) for a in raw[cate][img]])
-            
+    print("input length :",len(input_list))
+    print("feature length :",len(input_list[0].weight))
 
     ## initialize radius
     radius = (nodeNUM ** 0.5) / 2
@@ -320,7 +321,7 @@ def train_gray(radius, lr, tc):
         lr = lr0 * math.exp(-times/tc)
         radius = MAPradius * math.exp(-times/tc)
         print("Saving node model.....")
-        save_node_model('./CNN_model_{}.txt'.format(times))
+        save_node_model('./CNN_models/CNN_model_{}.txt'.format(times))
         # print('\a',end='',flush=True)
 
 

@@ -223,6 +223,7 @@ def save_weight():
 		weight = item.getWeight()
 		weight = np.reshape(weight, (1 ,80,120,3))
 		rnt = encoder.predict(weight)
+		rnt = np.reshape(rnt, (1200))
 		rnt = np.array(rnt, dtype=float)
 		rnt = np.round(rnt, decimals=6)
 		# print(rnt)

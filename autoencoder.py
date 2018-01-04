@@ -128,6 +128,8 @@ def train():
 	# decoder = Model(encoded_input, decoder_layer(encoded_input))
 	# autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
 	autoencoder.compile(optimizer='sgd', loss='mse')
+
+	'''
 	if not os.path.isfile(encoder_model_path):
 		print("save initial encoder model")
 		encoder.save(encoder_model_path)
@@ -136,8 +138,13 @@ def train():
 	if not os.path.isfile(autoencoder_model_path):
 		print("save initial autoencoder model")
 		encoder.save(autoencoder_model_path)
+		compile_flag = 1
 	else:
 		print("initial autoencoder model exists")
+		compile_flag = 0
+	'''
+
+
 	autoencoder.summary()
 	earlystopping = EarlyStopping(monitor='loss', patience = 3, verbose=1, mode='auto')
 	checkpoint = ModelCheckpoint(filepath='./autoencoder_checkpoint.h5',
@@ -149,9 +156,13 @@ def train():
 
 	for iterNOW in range(epochNUM//10):
 		### load nodel ###
-		encoder = load_model(encoder_model_path)
-		autoencoder = load_model(autoencoder_model_path)
-		# autoencoder.compile(optimizer='sgd', loss='mse')
+		if os.path.isfile(encoder_model_path):
+			encoder = load_model(encoder_model_path)
+		if os.path.isfile(autoencoder_model_path):
+			autoencoder = load_model(autoencoder_model_path)
+		# if compile_flag == 1:
+			# autoencoder.compile(optimizer='sgd', loss='mse')
+			# compile_flag = 0
 
 		print(">>>>>iterNOW : {}".format(iterNOW))
 		hist = autoencoder.fit(x_train, x_train,

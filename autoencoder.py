@@ -250,14 +250,15 @@ def save_weight():
 def test(path):
 	im = Image.open(path)
 	arr = np.array(im) / 255
-	arr = arr.tolist()
+	arr = np.reshape(arr, (1,80,120,3))
 	autoencoder = load_model(autoencoder_model_path)
 	decoded_img = autoencoder.predict(arr)
 	tmp = np.array(decoded_img)
 	tmp = tmp*255
 	tmp = np.array(tmp, dtype='uint8')
+	tmp = np.reshape(tmp, (80,120,3))	
 	img = PIL.Image.fromarray(tmp, 'RGB')
-	img.save('out_' + path + '.jpg')
+	img.save(path + '_out.jpg')
 	print("Predict {} Done".format(path))
 
 if __name__ == '__main__': 

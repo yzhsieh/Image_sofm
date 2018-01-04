@@ -168,6 +168,8 @@ def train():
 		hist = autoencoder.fit(x_train, x_train,
 						epochs=10,
 						batch_size=64,
+						shuffle=False,
+						validation_split=0.1
 						)
 		### save model###
 		print("Saving models")
@@ -245,6 +247,18 @@ def save_weight():
 	print("Saving weights to file")
 	save_encoded_weight()
 
+def test(path):
+	im = Image.open(path)
+	arr = np.array(im) / 255
+	arr = arr.tolist()
+	autoencoder = load_model(autoencoder_model_path)
+	decoded_img = autoencoder.predict(arr)
+	tmp = np.array(decoded_img)
+	tmp = tmp*255
+	tmp = np.array(tmp, dtype='uint8')
+	img = PIL.Image.fromarray(tmp, 'RGB')
+	img.save('out_' + path + '.jpg')
+	print("Predict {} Done".format(path))
 
 if __name__ == '__main__': 
 	### init
@@ -286,6 +300,15 @@ if __name__ == '__main__':
 		x_train = np.array(x_train)
 		x_test = np.array(x_train)
 		save_weight()
+	elif cmd == 'test':
+		print("#################")
+		print("## Save  Test  ##")
+		print("#################")
+		test('./test/1.jpg')
+		test('./test/2.jpg')
+		test('./test/3.jpg')
+		test('./test/4.jpg')
+		test('./test/5.jpg')
 	else:
 		print("ERROR!!!")
 		print("command : {} not found".format(cmd))

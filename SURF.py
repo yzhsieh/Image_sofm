@@ -14,13 +14,13 @@ def SURF(path, CVthreshold = 10000):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     surf = cv2.xfeatures2d.SURF_create(hessianThreshold=CVthreshold, upright=True, extended=False)
     (kps, descs) = surf.detectAndCompute(gray, None)
-    while len(kps)<16:
+    while len(kps)<32:
         CVthreshold = CVthreshold - 500
         # print("change thres to : ",CVthreshold)                
         surf = cv2.xfeatures2d.SURF_create(hessianThreshold=CVthreshold, upright=True, extended=False)
         (kps, descs) = surf.detectAndCompute(gray, None)
     tmp = []
-    for idx in range(16):
+    for idx in range(32):
         tmp.extend(descs[idx])
     # print(len(tmp))
     return tmp

@@ -32,7 +32,7 @@ nodeNUM = 400
 epochNUM = 300
 # PCAcomponentsNUM = 1024
 output_path = './output/'
-model_path = './CNN_model_76.txt'
+model_path = './CNN_model_50.txt'
 feature_path = './weights.txt'
 data_clusterNUM = 64
 same_threshold = 50
@@ -235,7 +235,6 @@ def load(save_pics = 1, show_weight = 0):
 			img = PIL.Image.fromarray(tmp, 'RGB')
 			img.save(decoded_img_path + '{}.jpg'.format(idx))
 			idx += 1
-	print("ohhhh it seems good so far")
 	if show_weight == 1:
 		print("Start to save encode things")
 		encoder = load_model(encoder_model_path)
@@ -323,14 +322,6 @@ class node():
 				axarr[i, j].axis('off')
 				axarr[i, j].set_title(ptr[0] + '\n' + ptr[1])
 		f.savefig(path)
-def init_color():
-	# mymap = np.zeros((width,heigh,3)).tolist()
-	mymap = np.zeros((width,heigh,3),dtype=int)
-	for i in range(width):
-		for j in range(heigh):
-			for k in range(3):
-				mymap[i][j][k] = random.randint(0,255)
-	return mymap
 
 def printCluster(nptr,path = './out.png'):
 	id = nptr.category
@@ -377,16 +368,21 @@ def save2pic(nx, ny,path = './out.png'):
 
 
 def save_node_pic(t):
-	tmp = np.zeros((length,length,3), dtype=int)
-	for i in node_list:
-		# print( i.getRGB(0))
-		tmp[i.posX][i.posY] = i.getRGB(0)
-	tmp = np.array(tmp,dtype='uint8')
-	img = PIL.Image.fromarray(tmp, 'RGB')
-	if type(t) == int:
-		img.save(output_path + 'iter' + str(t+1) + '.jpg')
-	else:
-		img.save(output_path + t + '.jpg')
+	f, axarr = plt.subplots(20, 20, figsize=(20,20))
+	for i in range(20):
+		for j in range(20):
+			ptr = node_list[i*20 + j]
+			near = None
+			for it in input_list:
+				if near == None:
+					near = it
+				elif ptr.get_distance(near.weight) > ptr.get_distance(it.weight):
+					near = it
+			im = Image.open(db_path + it.cate + '/' + it.name)								
+			axarr[i, j].imshow(np.array(im))
+			axarr[i, j].axis('off')
+			axarr[i, j].set_title(ptr.cate + '\n' + ptr.name)
+	f.savefig('./node_stat_{}.jpg'.format(t))
 
 
 def readPic(path = './out.png'):
@@ -488,7 +484,7 @@ def load_node_model():
 	print(' - Done')
 
 @autojit()
-def train_gray(radius, lr, tc):
+def train(radius, lr, tc):
 	# global radius, lr, tc
 	for times in range(epochNUM):
 		print("\niteration : ",times)
@@ -525,31 +521,21 @@ def test(test_path):
 		# img.dis = BMU.get_distance(img.getWeight())
 	## sort the intput list
 	# input_list = sorted(input_list, key=attrgetter('dis'))
-	# save2pic(8, 8,'out_' + test_path[2:-4] + '.png')
-	# BMU.printCluster('self_out_' + test_path[2:-4] + '.png')
+	save2pic(8, 8,'out_' + test_path[2:-4] + '.png')
 	printCluster(BMU, 'out_' + test_path[2:-4] + '.png')
 	print(" - Done")
 
 def loadimg(path):
+	encoder = load_model(encoder_model_path)
 	im = Image.open(path)
 	arr = np.array(im)
-	### create dict
-	### for 3 color + gray
-	stat = np.zeros((featureNUM),dtype=int).tolist()
-	for i in range(arr.shape[0]):
-		for j in range(arr.shape[1]):
-			tmp = int(sum(arr[i][j]) / 3)
-			stat[tmp] += 1
-			#R
-			tmp = arr[i][j][0]
-			stat[tmp + 256] += 1
-			#G
-			tmp = arr[i][j][1]
-			stat[tmp + 256*2] += 1
-			#B
-			tmp = arr[i][j][2]
-			stat[tmp + 256*3] += 1
-	return stat
+	weight = np.reshape(arr, (1 ,80,120,3))
+	rnt = encoder.predict(weight)
+	rnt = np.reshape(rnt, (1200))
+	rnt = np.array(rnt, dtype=float)
+	# rnt = np.round(rnt, decimals=6)
+	#######################
+	return rnt
 
 @autojit
 def same(list1,list2):
@@ -558,6 +544,7 @@ def same(list1,list2):
 		for j in list2:
 			if(i==j):
 				sameNUM = sameNUM +1
+				continue
 	# print("\n",sameNUM)
 	return sameNUM
 
@@ -585,9 +572,7 @@ def matching(input_list):
 			i.cluster = node_list[0].cluster
 	#################
 	print("\n - Matching done")
-
 	print("Node clustering")
-
 	for i in node_list:
 		for j in node_list[i.id+1:]:
 			if i.category == j.category:
@@ -600,6 +585,7 @@ def matching(input_list):
 				i.category = min(i.category, j.category)
 				j.category = i.category
 				print("\n change cate id : {} and {} to {}".format(ti, tj, i.category))
+				print(" - same NUM : {}".format(sameNUM))
 	print(" - Done")
 
 def printClusterinfo():
@@ -607,7 +593,6 @@ def printClusterinfo():
 	for it in node_list:
 		if it.category not in clslist:
 			clslist.append(it.category)
-	
 	print("Number of cluster : ",len(clslist))
 	print(','.join([str(a) for a in clslist]))
 
@@ -688,7 +673,7 @@ if __name__ == '__main__':
 		# put_back_PCA()
 		# print(" - Done")
 		print("Start to train")
-		train_gray(radius, lr, tc)
+		train(radius, lr, tc)
 	elif operation == 'test':
 		print("################")
 		print("## Start test ##")

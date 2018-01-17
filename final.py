@@ -32,7 +32,7 @@ nodeNUM = 400
 epochNUM = 300
 # PCAcomponentsNUM = 1024
 output_path = './output/'
-model_path = './CNN_sofm_model.txt'
+model_path = './CNN_model_76.txt'
 feature_path = './weights.txt'
 data_clusterNUM = 64
 same_threshold = 50
@@ -52,18 +52,10 @@ length = int(nodeNUM ** 0.5)
 init_time = time.time()
 PCAlist = []
 ###
-
 weightChangeFlag = 0
-
-
-
 encode_epochNUM = 500
-
-
 # feature_path = './CNN_feature_light.txt'
-
 ###
-
 
 db_path = './CorelDB2/'
 encode_feature_path = './CNN_feature.txt'
@@ -408,7 +400,7 @@ def init_train():
 	pos = 0
 	edge = nodeNUM ** 0.5
 	for i in range(nodeNUM):
-		node_list.append(node(pos%edge,pos//edge,pos))
+		node_list.append(node(pos%edge, pos//edge, pos))
 		pos += 1
 
 	## initialize inputs
@@ -494,29 +486,6 @@ def load_node_model():
 		tmpweight = [float(a) for a in row[3].split('#')]
 		node_list[id].weight = tmpweight
 	print(' - Done')
-
-@autojit
-def train():
-	global radius, lr, tc
-	for times in range(epochNUM):
-		print("\niteration : ",times)
-		print("time elapsed : ",time.time() - init_time)
-		for i in input_list:
-			print("\rnow : ({}/{})".format(input_list.index(i) + 1,len(input_list)),end='',flush=True)
-			BMU = cal_BMU(i.getRGB())
-			for n in node_list:
-				if n == BMU:
-					continue
-				distance = n.cal_neighbourhood(BMU.get_position())
-				if distance < radius:
-					# print(n.id)
-					for idx in range(featureNUM):   # update
-						n.weight[idx] = n.weight[idx] + cal_theta(distance,times) * lr * ((i.getRGB()[idx]) - n.weight[idx])
-					# print(n.weight)
-		save_node_pic(times)
-		lr = lr0 * math.exp(-times/tc)
-		radius = MAPradius * math.exp(-times/tc)
-		# print('\a',end='',flush=True)
 
 @autojit()
 def train_gray(radius, lr, tc):

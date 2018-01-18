@@ -208,6 +208,7 @@ def load_brutal():
     json.dump(gray_dict, file)
     print("ALL Done!!!")
 
+'''
 def load_SURF():
     global CVthreshold
     file = open('./filename_list.txt', 'r')
@@ -248,7 +249,7 @@ def load_SURF():
     file = open("./SURF_feature.txt", 'w')
     json.dump(gray_dict, file)
     print("ALL Done!!!")
-
+'''
 
 def load_CNN():
     global straight, land
@@ -278,7 +279,7 @@ def load_CNN():
             else:
                 print("WRONG size : ",im.size)
             arr = np.array(im)
-            arr = arr / 255
+            arr = myStd(arr)
             # print(arr)
             # print(arr.shape)
             ### create dict
@@ -291,10 +292,37 @@ def load_CNN():
         # print(gray_dict)
     print("land = {}\nstraight = {}".format(land,straight))
     print("Calculate done, saving file......")
-    file = open("./CNN_feature.txt", 'w')
+    file = open("./CNN_feature_normalized.txt", 'w')
     json.dump(all_dict, file)
     print("ALL Done!!!")
 
+
+def myStd(arr):
+    sumR = sumG = sumB = 0
+    tmpR = []
+    tmpG = []
+    tmpB = []
+    orishape = arr.shape
+    arr = np.reshape(arr,(80*120, 3))
+    rnt = []
+    for row in arr:
+        tmpR.append(row[0])
+        tmpG.append(row[0])
+        tmpB.append(row[0])
+
+    aveR = np.mean(tmpR)
+    aveG = np.mean(tmpG)
+    aveB = np.mean(tmpB)
+    stdR = np.std(tmpR)
+    stdG = np.std(tmpG)
+    stdB = np.std(tmpB)
+    # print(' - Recalculate the RGB value')
+    for i in range(len(tmpR)):
+        rnt.append([(tmpR[i]-aveR)/stdR, (tmpG[i]-aveG)/stdG, (tmpB[i]-aveB)/stdB])
+    rnt = np.array(rnt)
+    # print(rnt.shape)
+    rnt = np.reshape(rnt,orishape)
+    return rnt
 
 if __name__ == '__main__':
     init_time = time.time()

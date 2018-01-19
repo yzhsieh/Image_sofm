@@ -122,6 +122,7 @@ Dhanraj R. Dhotre,G. R. Bamnote,"Multilevel Haar Wavelet Transform and Histogram
 
  
  * 結果與討論
+ 
  而從下圖中，可以看到兩張完全不同的圖片所對應到的特徵點，其實是有所差異的，沒有辦法完全對應起來。
    ![](https://i.imgur.com/QlN56pN.png)
  當我們仔細去檢視每個Node當中儲存的圖片，發現圖片幾乎是呈現隨機分布，沒有辦法用人眼判讀其分類是否正確，推究原因後，我們認為我們對SURF所取出的特徵點不夠了解，無法判斷每個特徵點是否能代表其物件，但我們時間不足，也只能繼續尋找下一個方法。

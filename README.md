@@ -26,7 +26,7 @@
 3. 找出一個Node(BMU, Best Matching Unit)，其與這筆資料之間有著最小的Euclidean Distance
 <p align="center">
 <img src="https://latex.codecogs.com/gif.latex?Dist&space;=&space;\sqrt{\sum^{i=n}_{i=0}(V_i-W_i)^2}" title="Dist = \sqrt{\sum^{i=n}_{i=0}(V_i-W_i)^2}"/></p>
-<p>
+<p align="center">
 <br>
 V為該筆training data
 <br>
@@ -38,7 +38,7 @@ W為node之權重
 <a href="https://www.codecogs.com/eqnedit.php?latex=\sigma(t)&space;=&space;\sigma_0exp(-\frac{t}{\lambda})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\sigma(t)&space;=&space;\sigma_0exp(-\frac{t}{\lambda})" title="\sigma(t) = \sigma_0exp(-\frac{t}{\lambda})" /></a></p>
 <p align="center"><a href="https://www.codecogs.com/eqnedit.php?latex=\sigma_0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\sigma_0" title="\sigma_0" /></a>為mapping的大小，在<a href="https://www.codecogs.com/eqnedit.php?latex=t&space;=&space;0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?t&space;=&space;0" title="t = 0" /></a> 時，更新半徑會涵蓋整個map</p>
 	
-<a href="https://www.codecogs.com/eqnedit.php?latex=\lambda" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\lambda" title="\lambda" /></a> 為 time constant</p>
+<p align="center"><a href="https://www.codecogs.com/eqnedit.php?latex=\lambda" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\lambda" title="\lambda" /></a> 為 time constant</p>
 	
 5. 調整該半徑內所有node的權重，使其更接近input vector，越靠近BMU的node其調整幅度更大，更新公式為：
 <p align="center">

@@ -3,7 +3,7 @@
 ## 待辦
 - [ ] feature取法
 - [x] 動機修改 (google圖片搜尋很強大....balabala)
-- [ ] 結論 (unsupervised image retrival很難，training 很花時間等等)
+- [x] 結論 (unsupervised image retrival很難，training 很花時間等等)
 - [x] usage (如何使用我們的code)
 - [ ] code中各function代表的意義
 - [ ] (可選) 心得
@@ -25,19 +25,21 @@
     1. 對每個node的權重進行初始化
     2. 從training data中隨機選一筆資料
     3. 找出一個Node(BMU, Best Matching Unit)，其與這筆資料之間有著最小的Euclidean Distance
-     $$Dist = \sqrt{\sum^{i=n}_{i=0}(V_i-W_i)^2}$$
+     <a href="https://www.codecogs.com/eqnedit.php?latex=Dist&space;=&space;\sqrt{\sum^{i=n}_{i=0}(V_i-W_i)^2}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?Dist&space;=&space;\sqrt{\sum^{i=n}_{i=0}(V_i-W_i)^2}" title="Dist = \sqrt{\sum^{i=n}_{i=0}(V_i-W_i)^2}" /></a>
      $V$為該筆training data
      $W$為node之權重
     4. 計算更新半徑：
-$$\sigma(t) = \sigma_0exp(-\frac{t}{\lambda})$$
-        $\sigma_0$為mapping的大小，在 $t = 0$ 時，更新半徑會涵蓋整個map
-        $\lambda$ 為 time constant
+<a href="https://www.codecogs.com/eqnedit.php?latex=\sigma(t)&space;=&space;\sigma_0exp(-\frac{t}{\lambda})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\sigma(t)&space;=&space;\sigma_0exp(-\frac{t}{\lambda})" title="\sigma(t) = \sigma_0exp(-\frac{t}{\lambda})" /></a>
+        <a href="https://www.codecogs.com/eqnedit.php?latex=\sigma_0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\sigma_0" title="\sigma_0" /></a>為mapping的大小，在 <a href="https://www.codecogs.com/eqnedit.php?latex=t&space;=&space;0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?t&space;=&space;0" title="t = 0" /></a> 時，更新半徑會涵蓋整個map
+        <a href="https://www.codecogs.com/eqnedit.php?latex=\lambda" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\lambda" title="\lambda" /></a> 為 time constant
     5. 調整該半徑內所有node的權重，使其更接近input vector，越靠近BMU的node其調整幅度更大，更新公式為：
-$$W(t+1) = W(t) + \Theta(t)L(t)(V(t)-W(t))$$
-$$L(t) = L_0exp(-\frac{t}{\lambda})$$
-$$\Theta(t) = exp(-\frac{dist^2}{2\sigma^2(t)})\qquad t = 1,2,3,....$$
-$L(t)$ 為Learning rate，會隨著時間而降低
-$\Theta(t)$ 為隨著與BMU之間的Euclidean Distance改變，其更新幅度的大小，如下圖
+<a href="https://www.codecogs.com/eqnedit.php?latex=W(t&plus;1)&space;=&space;W(t)&space;&plus;&space;\Theta(t)L(t)(V(t)-W(t))$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?W(t&plus;1)&space;=&space;W(t)&space;&plus;&space;\Theta(t)L(t)(V(t)-W(t))$$" title="W(t+1) = W(t) + \Theta(t)L(t)(V(t)-W(t))$$" /></a>
+
+<a href="https://www.codecogs.com/eqnedit.php?latex=L(t)&space;=&space;L_0exp(-\frac{t}{\lambda})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?L(t)&space;=&space;L_0exp(-\frac{t}{\lambda})" title="L(t) = L_0exp(-\frac{t}{\lambda})" /></a>
+
+<a href="https://www.codecogs.com/eqnedit.php?latex=\Theta(t)&space;=&space;exp(-\frac{dist^2}{2\sigma^2(t)})\qquad&space;t&space;=&space;1,2,3,...." target="_blank"><img src="https://latex.codecogs.com/gif.latex?\Theta(t)&space;=&space;exp(-\frac{dist^2}{2\sigma^2(t)})\qquad&space;t&space;=&space;1,2,3,...." title="\Theta(t) = exp(-\frac{dist^2}{2\sigma^2(t)})\qquad t = 1,2,3,...." /></a>
+<a href="https://www.codecogs.com/eqnedit.php?latex=L(t)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?L(t)" title="L(t)" /></a> 為Learning rate，會隨著時間而降低
+<a href="https://www.codecogs.com/eqnedit.php?latex=\Theta(t)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\Theta(t)" title="\Theta(t)" /></a> 為隨著與BMU之間的Euclidean Distance改變，其更新幅度的大小，如下圖
 ![](http://www.ai-junkie.com/ann/som/images/graph1.jpg)
 
     6. 重複 2. 直到跑完所有epoch
@@ -49,7 +51,9 @@ $\Theta(t)$ 為隨著與BMU之間的Euclidean Distance改變，其更新幅度�
   我們試圖將SOFM以視覺化的方式表現出來，除了說明其降維的功效外，也能觀察其將node進行分類並依據種類而聚集的狀態。
   首先設定map為 500 x 500 個 node，每個node的weight皆為隨機的三維變數，接著使用我們事先寫好的training data(0到1之間)進行training。
  train完後將node的weight放大成0到255間，並以RGB的方式，使每一個Node代表一個Pixel，將所有Node輸出成一張pixel 500 x 500的圖片，如下圖：從左而右分別為4筆、10筆、100筆input data。
- <center><img src="https://i.imgur.com/tHaX3GB.jpg" width=100 height=100>  <img src="https://i.imgur.com/NdHA6vO.jpg" width=100 height=100>  <img src="https://i.imgur.com/e2PuNCh.jpg" width=100 height=100></center>
+<p algin="center">
+<img src="https://i.imgur.com/tHaX3GB.jpg" width=100 height=100> <img src="https://i.imgur.com/NdHA6vO.jpg" width=100 height=100> <img src="https://i.imgur.com/e2PuNCh.jpg" width=100 height=100>
+</p>
 - 複雜度
 	依此設計來講時間複雜度為 $O(nf)$
 	$n$為node的數量，$f$為feature的數量
@@ -71,15 +75,14 @@ $\Theta(t)$ 為隨著與BMU之間的Euclidean Distance改變，其更新幅度�
  先將圖片轉成一個三維的資訊，分別為長、寬、以及RGB，然後對每一格根據RGB的值算出一個0~255之間的值，即可求出Color Histogram。
  * 結果
  前方大小為120x80的原圖，後方為經過我們系統得到的最相近的64張圖
-<center>
-
+<p algin="center">
 ![](https://i.imgur.com/KD1p9rc.jpg) <img src="https://i.imgur.com/a1GKDDo.png" width=400 height=400>
 
 ![](https://i.imgur.com/nuHNdob.jpg) <img src="https://i.imgur.com/gYXrUte.png" width=400 height=400>
 ![](https://i.imgur.com/0RTP0zi.jpg)<img
 src="https://i.imgur.com/Bh6eXTg.png" width=400
 height=400>
-</center>
+</p>
  * 討論
 由以上的結果可以看到，把histogram作為主要的feature取法是不夠具有代表性的，因為只考慮到顏色0~255的數值且無法有效的以此作為判斷圖片內物體的依據，所以我們改尋找其他能夠有如圖片內物體的edge的feature取法。
 
@@ -95,6 +98,7 @@ Dhanraj R. Dhotre,G. R. Bamnote,"Multilevel Haar Wavelet Transform and Histogram
  * 結果與討論
  當我們仔細去檢視每個Node當中儲存的圖片，發現圖片幾乎是呈現隨機分布，沒有辦法用人眼判讀其分類是否正確，推究原因後，我們認為我們對SURF所取出的特徵點不夠了解，無法判斷每個特徵點是否能代表其物件，但我們時間不足，也只能繼續尋找下一個方法。
  
+參考網站： [Introduction to SURF (Speeded-Up Robust Features)](https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_surf_intro/py_surf_intro.html)
  
 ### Brutal
 因為SURF的feature無法使用SOFM的方式來做分類，因此我們又另外找方法。這次我們想要直接拿圖片的每個pixel來做為feature，而一個pixel又有RGB三個資訊，因此總共有 80 * 120 * 3 = 28800個feature。以我們的硬體設備是沒有辦法跑的，因此必須要降維。我們嘗試過PCA和autoencoder兩種方式，最後採用autoencoder，不過兩種降維方式拿來跑SOFM各自產生了不一樣的問題
@@ -181,5 +185,5 @@ test: Input test data
 ## 結論
 Unsupervised 的 Image-Retrieval System如果不使用CNN的話，實在很難做出來。畢竟同樣的一個物體，可能會有不同的形狀以及顏色，因此單靠顏色或是邊界偵測效果非常有限。我認為比較好的方法還是透過辨識將照片中的物體辨識出來，再label上去，但這就不是我們這個學期的主要目標了。
 儘管如此，我們還是希望能找個一個兼具效率與準確度的Feature Extraction，從Color Histogram開始，node會被顏色主導，無法有效辨識物體；SURF在比對圖片的扭曲上有著很好的效果，但拿來比對不同圖片時就完全沒有效果；若直接將圖片每個畫素的RGB當作feature，可能會有不錯的效果，但我們的硬體設備實在不足以支撐這樣的運算量；為了解決運算量的問題，我們使用PCA的降維技術，希望在壓低運算量的同時，也能保持資料不失真，但結果仍然是被原圖的顏色主導，無法準確找出我們需要的主題；而在老師的建議後，我們將PCA改成Autoencoder，利用Autoencoder model將圖片encoder取得feature後在使用SOFM進行train。但儘管Autoencoder model將圖片decode後，其失真率十分的小，Image Retrieval的效果卻十分的糟糕。
-經歷了一學期的嘗試，我們認知到自己在computer vision上還不夠熟稔，因此不斷在Feature Extraction的部分遇到難題，也就是不斷的"Try and Error"，儘管充滿實驗精神，卻依舊無法直搗問題核心，算是令人比較沮喪的地方，但我們學習到了許多取Feature的方法，也認識到computer vision的重要性，這也是這學期除了學到了許多Neural Network外
+經歷了一學期的嘗試，我們認知到自己在computer vision上還不夠熟稔，因此不斷在Feature Extraction的部分遇到難題，也就是不斷的"Try and Error"，儘管充滿實驗精神，卻依舊無法直搗問題核心，算是令人比較沮喪的地方，但我們學習到了許多取Feature的方法，也認識到computer vision的重要性，這也是這學期除了學到了許多Neural Network的知識外，最大的收穫吧。
 

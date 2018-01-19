@@ -81,7 +81,9 @@ W為node之權重
  - 複雜度
 	依此設計來講時間複雜度為 O(nf)
 	，n為node的數量，f為feature的數量
+	
 	下面的設計中node數皆為400
+	
 	feature數則盡量接近1000
     
 參考網站：[Kohonen's Self Organizing Feature Maps](http://www.ai-junkie.com/ann/som/som1.html)
@@ -100,12 +102,15 @@ W為node之權重
  * 結果
  前方大小為120x80的原圖，後方為經過我們系統得到的最相近的64張圖
 <p align="center">
-    
-![](https://i.imgur.com/KD1p9rc.jpg) <img src="https://i.imgur.com/a1GKDDo.png" width=400 height=400>
+<img src="https://i.imgur.com/KD1p9rc.jpg"><img src="https://i.imgur.com/a1GKDDo.png" width=400 height=400>
 <br>
-![](https://i.imgur.com/nuHNdob.jpg) <img src="https://i.imgur.com/gYXrUte.png" width=400 height=400>
+</p>
+<p align="center">
+<img src="https://i.imgur.com/nuHNdob.jpg"> <img src="https://i.imgur.com/gYXrUte.png" width=400 height=400>
 <br>
-![](https://i.imgur.com/0RTP0zi.jpg)<img
+</p>
+<p align="center">
+	<img src="https://i.imgur.com/0RTP0zi.jpg"><img
 src="https://i.imgur.com/Bh6eXTg.png" width=400
 height=400>
 </p>
@@ -122,7 +127,6 @@ Dhanraj R. Dhotre,G. R. Bamnote,"Multilevel Haar Wavelet Transform and Histogram
 
  
  * 結果與討論
- 
  而從下圖中，可以看到兩張完全不同的圖片所對應到的特徵點，其實是有所差異的，沒有辦法完全對應起來。
    ![](https://i.imgur.com/QlN56pN.png)
  當我們仔細去檢視每個Node當中儲存的圖片，發現圖片幾乎是呈現隨機分布，沒有辦法用人眼判讀其分類是否正確，推究原因後，我們認為我們對SURF所取出的特徵點不夠了解，無法判斷每個特徵點是否能代表其物件，但我們時間不足，也只能繼續尋找下一個方法。

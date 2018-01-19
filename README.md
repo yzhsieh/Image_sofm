@@ -1,6 +1,6 @@
 ## Unsupervised Content-based Image Retrieval on SOFM
-
 <p align="right">
+	指導教授：闕志達 <br>
 	b03901166 謝宜展 <br>
 	b03901109 陳緯哲 <br>
 	b03901098 王建翔

@@ -62,6 +62,8 @@ W為node之權重
 <p align="center">
 	<img src="http://www.ai-junkie.com/ann/som/images/graph1.jpg"/>
 </p>
+
+
 6. 重複 2. 直到跑完所有epoch
 7. 每個node會將離自己最近的64張training data存入自身
 8. 比較每個node，若任兩個Node中，有50個以上相同的data，則這兩個Node會被分類到同一個cluster，依照上述過程，將所有Node進行分類

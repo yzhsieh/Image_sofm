@@ -49,9 +49,7 @@ $\Theta(t)$ 為隨著與BMU之間的Euclidean Distance改變，其更新幅度�
   我們試圖將SOFM以視覺化的方式表現出來，除了說明其降維的功效外，也能觀察其將node進行分類並依據種類而聚集的狀態。
   首先設定map為 500 x 500 個 node，每個node的weight皆為隨機的三維變數，接著使用我們事先寫好的training data(0到1之間)進行training。
  train完後將node的weight放大成0到255間，並以RGB的方式，使每一個Node代表一個Pixel，將所有Node輸出成一張pixel 500 x 500的圖片，如下圖：從左而右分別為4筆、10筆、100筆input data。
- <center>
-<img src="https://i.imgur.com/tHaX3GB.jpg" width=100 height=100>  <img src="https://i.imgur.com/NdHA6vO.jpg" width=100 height=100>  <img src="https://i.imgur.com/e2PuNCh.jpg" width=100 height=100>
-</center>
+ <center><img src="https://i.imgur.com/tHaX3GB.jpg" width=100 height=100>  <img src="https://i.imgur.com/NdHA6vO.jpg" width=100 height=100>  <img src="https://i.imgur.com/e2PuNCh.jpg" width=100 height=100></center>
 - 複雜度
 	依此設計來講時間複雜度為 $O(nf)$
 	$n$為node的數量，$f$為feature的數量
@@ -61,7 +59,7 @@ $\Theta(t)$ 為隨著與BMU之間的Euclidean Distance改變，其更新幅度�
 參考網站：[Kohonen's Self Organizing Feature Maps](http://www.ai-junkie.com/ann/som/som1.html)
 
 [1]Dian Pratiwi,"The Use of Self Organizing Map Method and Feature Selection in Image Database Classification System."2012.
-[2]YangKun,ZhuHong,PanYing-jie,"Human Face Detection Based on SOFM NeuralNetwork."20.
+[2]YangKun,ZhuHong,PanYing-jie,"Human Face Detection Based on SOFM NeuralNetwork."2006.
 
 ## Feature Extraction之方法與結果
 
@@ -96,6 +94,7 @@ Dhanraj R. Dhotre,G. R. Bamnote,"Multilevel Haar Wavelet Transform and Histogram
  也因為SURF能夠辨認出圖片當中的特徵點，而Opencv有支援SURF的運算，因此我們想利用這些特徵點當作圖片的feature，每張圖片取16個特徵點，每個特徵點為64維，再將他放進SOFM的架構內進行training。
  * 結果與討論
  當我們仔細去檢視每個Node當中儲存的圖片，發現圖片幾乎是呈現隨機分布，沒有辦法用人眼判讀其分類是否正確，推究原因後，我們認為我們對SURF所取出的特徵點不夠了解，無法判斷每個特徵點是否能代表其物件，但我們時間不足，也只能繼續尋找下一個方法。
+ 
  
 ### Brutal
 因為SURF的feature無法使用SOFM的方式來做分類，因此我們又另外找方法。這次我們想要直接拿圖片的每個pixel來做為feature，而一個pixel又有RGB三個資訊，因此總共有 80 * 120 * 3 = 28800個feature。以我們的硬體設備是沒有辦法跑的，因此必須要降維。我們嘗試過PCA和autoencoder兩種方式，最後採用autoencoder，不過兩種降維方式拿來跑SOFM各自產生了不一樣的問題
@@ -182,5 +181,5 @@ test: Input test data
 ## 結論
 Unsupervised 的 Image-Retrieval System如果不使用CNN的話，實在很難做出來。畢竟同樣的一個物體，可能會有不同的形狀以及顏色，因此單靠顏色或是邊界偵測效果非常有限。我認為比較好的方法還是透過辨識將照片中的物體辨識出來，再label上去，但這就不是我們這個學期的主要目標了。
 儘管如此，我們還是希望能找個一個兼具效率與準確度的Feature Extraction，從Color Histogram開始，node會被顏色主導，無法有效辨識物體；SURF在比對圖片的扭曲上有著很好的效果，但拿來比對不同圖片時就完全沒有效果；若直接將圖片每個畫素的RGB當作feature，可能會有不錯的效果，但我們的硬體設備實在不足以支撐這樣的運算量；為了解決運算量的問題，我們使用PCA的降維技術，希望在壓低運算量的同時，也能保持資料不失真，但結果仍然是被原圖的顏色主導，無法準確找出我們需要的主題；而在老師的建議後，我們將PCA改成Autoencoder，利用Autoencoder model將圖片encoder取得feature後在使用SOFM進行train。但儘管Autoencoder model將圖片decode後，其失真率十分的小，Image Retrieval的效果卻十分的糟糕。
-經歷了一學期的嘗試，我們認知到自己在computer vision上還不夠熟稔，因此不斷在Feature Extraction的部分遇到難題，也就是不斷的"Try and Error"，儘管充滿實驗精神，卻依舊無法直搗問題核心，算是令人比較沮喪的地方，但
+經歷了一學期的嘗試，我們認知到自己在computer vision上還不夠熟稔，因此不斷在Feature Extraction的部分遇到難題，也就是不斷的"Try and Error"，儘管充滿實驗精神，卻依舊無法直搗問題核心，算是令人比較沮喪的地方，但我們學習到了許多取Feature的方法，也認識到computer vision的重要性，這也是這學期除了學到了許多Neural Network外
 

@@ -96,28 +96,32 @@ W為node之權重
 
 ### Color Histogram 
  * 原理 
+
  Color Histogram是在許多Content Based Image Retrieval System中被廣泛採用的feature。它所描述的是不同色彩在整幅圖像中所佔的比例，但是對於每一個顏色在該圖片的相對位置卻不夠重視。Color Histogram特別適於描述那些難以進行自動分割的圖像。
  * 方法
+
  先將圖片轉成一個三維的資訊，分別為長、寬、以及RGB，然後對每一格根據RGB的值算出一個0~255之間的值，即可求出Color Histogram。
  * 結果
+
  前方大小為120x80的原圖，後方為經過我們系統得到的最相近的64張圖
-<p align="center">
+<p align="center" valign="center">
 <img src="https://i.imgur.com/KD1p9rc.jpg"><img src="https://i.imgur.com/a1GKDDo.png" width=400 height=400>
 <br>
 </p>
-<p align="center">
+<p align="center" valign="center">
 <img src="https://i.imgur.com/nuHNdob.jpg"> <img src="https://i.imgur.com/gYXrUte.png" width=400 height=400>
 <br>
 </p>
-<p align="center">
+<p align="center" valign="center">
 	<img src="https://i.imgur.com/0RTP0zi.jpg"><img
 src="https://i.imgur.com/Bh6eXTg.png" width=400
 height=400>
 </p>
+
  * 討論
 由以上的結果可以看到，把histogram作為主要的feature取法是不夠具有代表性的，因為只考慮到顏色0~255的數值且無法有效的以此作為判斷圖片內物體的依據，所以我們改尋找其他能夠有如圖片內物體的edge的feature取法。
 
--Referance
+- Referance
 Dhanraj R. Dhotre,G. R. Bamnote,"Multilevel Haar Wavelet Transform and Histogram Usage in Content Based Image Retrieval System."2017.
 
 ### Speeded Up Robust Features (SURF)

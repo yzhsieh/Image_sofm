@@ -83,9 +83,7 @@ W為node之權重
 	依此設計來講時間複雜度為 O(nf)
 	，n為node的數量，f為feature的數量
 	
-	下面的設計中node數皆為400
-	
-	feature數則盡量接近1000
+	下面的設計中node數皆為400，feature數則盡量接近1000
     
 參考網站：[Kohonen's Self Organizing Feature Maps](http://www.ai-junkie.com/ann/som/som1.html)
 
@@ -201,7 +199,9 @@ height=400>
 ```
 值得一提的是使用NN做autoencoder的時候CNN的padding要使用same，否則CNN會讓資料數量下降，讓我們encode之後無法decode回來。
 另外，之所以要train autoencoder而不是只train encoder就好，是為了看我們的model好不好。而在改了幾次model的架構之後，有了不錯的結果
-![](https://i.imgur.com/tPMvNjv.png)
+
+<img align="center" src="https://i.imgur.com/tPMvNjv.png">
+
 
 上方的表格中，前三張圖片是不在training資料裡面的，因此可以確定我們train的model是有用的，可以在一定的程度下把圖片encode再decode回相似的原圖
 
@@ -228,13 +228,13 @@ height=400>
 	load_CNN() : #直接輸出圖片的架構(80\*120\*3的三維陣列，提供autoencoder train)
 	 ```
  * python3 final.py [command]  command部分請見以下指令
-```
-auto_train: train autoencoder model
-auto_weight: 使用train好的model encode 所有圖片並輸出成.txt檔
-auto_test: decode 圖片 (用來檢視model的效果如何) 
-train: train SOFM model
-test: Input test data
-```
+	```
+	auto_train: train autoencoder model
+	auto_weight: 使用train好的model encode 所有圖片並輸出成.txt檔
+	auto_test: decode 圖片 (用來檢視model的效果如何) 
+	train: train SOFM model
+	test: Input test data
+	```
 ## 結論
 我們在學期中時就已經寫出了SOFM，但取feature的方法卻一直沒有著落，因此我們花了半個學期，希望能找個一個兼具效率與準確度的Feature Extraction。
 從Color Histogram開始，node會被顏色主導，無法有效辨識物體；SURF在比對圖片的扭曲上有著很好的效果，但拿來比對不同圖片時就完全沒有效果；若直接將圖片每個畫素的RGB當作feature，可能會有不錯的效果，但我們的硬體設備實在不足以支撐這樣的運算量；為了解決運算量的問題，我們使用PCA的降維技術，希望在壓低運算量的同時，也能保持資料不失真，但結果仍然是被原圖的顏色主導，無法準確找出我們需要的主題；而在老師的建議後，我們將PCA改成Autoencoder，利用Autoencoder model將圖片encoder取得feature後在使用SOFM進行train。但儘管Autoencoder model將圖片decode後，其失真率十分的小，Image Retrieval的效果卻十分的糟糕。

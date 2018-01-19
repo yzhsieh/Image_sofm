@@ -70,15 +70,17 @@ W為node之權重
 9. 輸入test data，找出離他最近的node，輸出該node所屬的cluster中所有的圖片
 
 * 實作
+
   我們試圖將SOFM以視覺化的方式表現出來，除了說明其降維的功效外，也能觀察其將node進行分類並依據種類而聚集的狀態。
   首先設定map為 500 x 500 個 node，每個node的weight皆為隨機的三維變數，接著使用我們事先寫好的training data(0到1之間)進行training。
  train完後將node的weight放大成0到255間，並以RGB的方式，使每一個Node代表一個Pixel，將所有Node輸出成一張pixel 500 x 500的圖片，如下圖：從左而右分別為4筆、10筆、100筆input data。
 <p align="center">
 <img src="https://i.imgur.com/tHaX3GB.jpg" width=100 height=100> <img src="https://i.imgur.com/NdHA6vO.jpg" width=100 height=100> <img src="https://i.imgur.com/e2PuNCh.jpg" width=100 height=100>
 </p>
-- 複雜度
-	依此設計來講時間複雜度為 $O(nf)$
-	$n$為node的數量，$f$為feature的數量
+
+ - 複雜度
+	依此設計來講時間複雜度為 O(nf)
+	，n為node的數量，f為feature的數量
 	下面的設計中node數皆為400
 	feature數則盡量接近1000
     

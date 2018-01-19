@@ -137,6 +137,7 @@ Dhanraj R. Dhotre,G. R. Bamnote,"Multilevel Haar Wavelet Transform and Histogram
 
  而從下圖中，可以看到兩張完全不同的圖片所對應到的特徵點，其實是有所差異的，沒有辦法完全對應起來。
    ![](https://i.imgur.com/QlN56pN.png)
+   
  當我們仔細去檢視每個Node當中儲存的圖片，發現圖片幾乎是呈現隨機分布，沒有辦法用人眼判讀其分類是否正確，推究原因後，我們認為我們對SURF所取出的特徵點不夠了解，無法判斷每個特徵點是否能代表其物件，但我們時間不足，也只能繼續尋找下一個方法。
  
 參考網站： [Introduction to SURF (Speeded-Up Robust Features)](https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_surf_intro/py_surf_intro.html)
@@ -154,18 +155,21 @@ Dhanraj R. Dhotre,G. R. Bamnote,"Multilevel Haar Wavelet Transform and Histogram
 透過呼叫scikit-learn裏頭的PCA套件來將28800維的feature降為1024維，並發現結果卻不如預期，下方為透過PCA把feature降維做出來的結果，前方為原圖、後方為透過我們系統拿出的相近的圖，但是卻發現選出來的圖會被原圖有最高比例的顏色給dominate。
 
 <p align="center" valign="center">
-<img src="https://i.imgur.com/JCZWuLZ.jpg"><img src="https://i.imgur.com/a1GKDDo.png" width=400 height=400>
-<br>
-</p>
+<img src="https://i.imgur.com/4udT1wJ.jpg"> <img src="https://i.imgur.com/JCZWuLZ.jpg" width=400
+height=400>
+																		 <br></p>
 <p align="center" valign="center">
-<img src="https://i.imgur.com/35JZpul.jpg"> <img src="https://i.imgur.com/xaAO6TY.png" width=400 height=400>
-<br>
-</p>
+<img src="https://i.imgur.com/35JZpul.jpg"> 
+																					<img
+src="https://i.imgur.com/xaAO6TY.png" width=400
+height=400>
+	<br></p>
 <p align="center" valign="center">
-	<img src="https://i.imgur.com/OoROeKM.jpg"><img
+<img src="https://i.imgur.com/OoROeKM.jpg"><img
 src="https://i.imgur.com/cgtKTzH.png" width=400
 height=400>
 </p>
+
 
 ### Autoencoder
 使用autoencoder的原因是因為比起PCA，autoencoder的降維方式對二維的資料比較有用(畢竟也是用CNN達成)。因此在教授的建議下，我們改使用autoencoder。
@@ -198,6 +202,7 @@ height=400>
 值得一提的是使用NN做autoencoder的時候CNN的padding要使用same，否則CNN會讓資料數量下降，讓我們encode之後無法decode回來。
 另外，之所以要train autoencoder而不是只train encoder就好，是為了看我們的model好不好。而在改了幾次model的架構之後，有了不錯的結果
 ![](https://i.imgur.com/tPMvNjv.png)
+
 上方的表格中，前三張圖片是不在training資料裡面的，因此可以確定我們train的model是有用的，可以在一定的程度下把圖片encode再decode回相似的原圖
 
 
@@ -209,9 +214,11 @@ height=400>
 ## 程式執行環境與指令
  * 環境：Python 3.6
  * Database：[CoralDB](http://research.cs.wisc.edu/coral/)
+ 
     在使用該Database時，我們刪除了一些如星球、面具、紋路等不常見的圖片，讓我們的過程與結果能更加貼近現實。
  * 使用方式
  * 取feature：
+ 
    執行 extraction.py，依據想取的方式去改動main()中使用的function，各functions的功能如下：
 	 ```python
 	 load_and_turn_gray()  # 輸出灰階的color histogram (feature數：256)
@@ -220,7 +227,7 @@ height=400>
 	 		#格式如下：[[R],[G],[B]] feature數為80\*120\*3=28800
 	load_CNN() : #直接輸出圖片的架構(80\*120\*3的三維陣列，提供autoencoder train)
 	 ```
- * python3 final.py <command>  command部分請見以下指令
+ * python3 final.py [command]  command部分請見以下指令
 ```
 auto_train: train autoencoder model
 auto_weight: 使用train好的model encode 所有圖片並輸出成.txt檔

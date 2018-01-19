@@ -25,7 +25,8 @@
 2. 從training data中隨機選一筆資料
 3. 找出一個Node(BMU, Best Matching Unit)，其與這筆資料之間有著最小的Euclidean Distance
 <p align="center">
-<img src="https://latex.codecogs.com/gif.latex?Dist&space;=&space;\sqrt{\sum^{i=n}_{i=0}(V_i-W_i)^2}" title="Dist = \sqrt{\sum^{i=n}_{i=0}(V_i-W_i)^2}"/>
+<img src="https://latex.codecogs.com/gif.latex?Dist&space;=&space;\sqrt{\sum^{i=n}_{i=0}(V_i-W_i)^2}" title="Dist = \sqrt{\sum^{i=n}_{i=0}(V_i-W_i)^2}"/></p>
+<p>
 <br>
 V為該筆training data
 <br>
@@ -47,8 +48,10 @@ W為node之權重
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=\Theta(t)&space;=&space;exp(-\frac{dist^2}{2\sigma^2(t)})\qquad&space;t&space;=&space;1,2,3,...." target="_blank"><img src="https://latex.codecogs.com/gif.latex?\Theta(t)&space;=&space;exp(-\frac{dist^2}{2\sigma^2(t)})\qquad&space;t&space;=&space;1,2,3,...." title="\Theta(t) = exp(-\frac{dist^2}{2\sigma^2(t)})\qquad t = 1,2,3,...." /></a>
 </p>
+<br>
 <p>
 	<a href="https://www.codecogs.com/eqnedit.php?latex=L(t)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?L(t)" title="L(t)" /></a> 為Learning rate，會隨著時間而降低</p>
+	<br>
 <p>
 <a href="https://www.codecogs.com/eqnedit.php?latex=\Theta(t)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\Theta(t)" title="\Theta(t)" /></a> 為隨著與BMU之間的Euclidean Distance改變，其更新幅度的大小，如下圖
 </p>
@@ -91,7 +94,6 @@ W為node之權重
 <p algin="center">
     
 ![](https://i.imgur.com/KD1p9rc.jpg) <img src="https://i.imgur.com/a1GKDDo.png" width=400 height=400>
-
 ![](https://i.imgur.com/nuHNdob.jpg) <img src="https://i.imgur.com/gYXrUte.png" width=400 height=400>
 ![](https://i.imgur.com/0RTP0zi.jpg)<img
 src="https://i.imgur.com/Bh6eXTg.png" width=400

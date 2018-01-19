@@ -1,10 +1,15 @@
 ## Unsupervised Content-based Image Retrieval on SOFM
+
 <p align="right">
-	指導教授：闕志達 <br>
-	b03901166 謝宜展 <br>
-	b03901109 陳緯哲 <br>
-	b03901098 王建翔
+指導教授：闕志達<br>
+b03901166 謝宜展
+	<br>
+b03901109 陳緯哲
+	<br>
+b03901098 王建翔
 </p>
+
+
 ## 動機
 隨著機器學習技術的成熟，圖片的辨識與分類變得更加容易，但大多數的辨識還是必須仰賴Supervised Neural Network，工程師必須不斷的告訴電腦這樣的答案對或錯，提供NN更新權重的標準；但資料庫越來越大，Supervised的方式不僅效率低落，也浪費人力，因此我們希望能利用Unsupervised的方式來進行圖像的處理。
 我們希望類神經網路能直接依據圖片本身的內容作出分類，取代人力一張圖片一張圖片進行Label的過程，以Google的圖片搜尋為例，我們可以直接輸入一張Google資料庫內所沒有的圖片，即使我們沒有為這張圖片進行Label，搜尋引擎依舊可以判讀圖片的內容，並為我們找出相似的圖片，這樣的圖片搜尋方法被稱為Content-based Image Retrieval。

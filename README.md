@@ -235,6 +235,9 @@ height=400>
 	```
 ## 結論
 我們在學期中時就已經寫出了SOFM，但取feature的方法卻一直沒有著落，因此我們花了半個學期，希望能找個一個兼具效率與準確度的Feature Extraction。
+
 從Color Histogram開始，node會被顏色主導，無法有效辨識物體；SURF在比對圖片的扭曲上有著很好的效果，但拿來比對不同圖片時就完全沒有效果；若直接將圖片每個畫素的RGB當作feature，可能會有不錯的效果，但我們的硬體設備實在不足以支撐這樣的運算量；為了解決運算量的問題，我們使用PCA的降維技術，希望在壓低運算量的同時，也能保持資料不失真，但結果仍然是被原圖的顏色主導，無法準確找出我們需要的主題；而在老師的建議後，我們將PCA改成Autoencoder，利用Autoencoder model將圖片encoder取得feature後在使用SOFM進行train。但儘管Autoencoder model將圖片decode後，其失真率十分的小，Image Retrieval的效果卻十分的糟糕。
+
 Unsupervised 的 Image-Retrieval System如果不使用CNN的話，實在很難做出來。畢竟同樣的一個物體，可能會有不同的形狀以及顏色，因此單靠顏色或是邊界偵測效果非常有限。我認為比較好的方法還是透過辨識將照片中的物體辨識出來，再label上去，但這就不是我們這個學期的主要目標了。
+
 經歷了一學期的嘗試，我們認知到自己在computer vision上還不夠熟稔，因此不斷在Feature Extraction的部分遇到難題，也就是不斷的"Try and Error"，儘管充滿實驗精神，卻依舊無法直搗問題核心，算是令人比較沮喪的地方，但我們學習到了許多取Feature的方法，也認識到computer vision的重要性，這也是這學期除了學到了許多Neural Network的知識外，最大的收穫吧。

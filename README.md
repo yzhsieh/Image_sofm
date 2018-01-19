@@ -28,9 +28,7 @@
 <img src="https://latex.codecogs.com/gif.latex?Dist&space;=&space;\sqrt{\sum^{i=n}_{i=0}(V_i-W_i)^2}" title="Dist = \sqrt{\sum^{i=n}_{i=0}(V_i-W_i)^2}"/></p>
 <p align="center">
 <br>
-V為該筆training data
-<br>
-W為node之權重
+V為該筆training data，W為node之權重
 </p>
 		 
 4. 計算更新半徑：
@@ -51,11 +49,11 @@ W為node之權重
 <a href="https://www.codecogs.com/eqnedit.php?latex=\Theta(t)&space;=&space;exp(-\frac{dist^2}{2\sigma^2(t)})\qquad&space;t&space;=&space;1,2,3,...." target="_blank"><img src="https://latex.codecogs.com/gif.latex?\Theta(t)&space;=&space;exp(-\frac{dist^2}{2\sigma^2(t)})\qquad&space;t&space;=&space;1,2,3,...." title="\Theta(t) = exp(-\frac{dist^2}{2\sigma^2(t)})\qquad t = 1,2,3,...." /></a>
 </p>
 
-<p>
+<p align="center">
 	<br>
 	<a href="https://www.codecogs.com/eqnedit.php?latex=L(t)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?L(t)" title="L(t)" /></a> 為Learning rate，會隨著時間而降低</p>
 	
-<p>
+<p align="center">
 	<br>
 <a href="https://www.codecogs.com/eqnedit.php?latex=\Theta(t)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\Theta(t)" title="\Theta(t)" /></a> 為隨著與BMU之間的Euclidean Distance改變，其更新幅度的大小，如下圖
 </p>

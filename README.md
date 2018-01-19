@@ -36,7 +36,7 @@ W為node之權重
 4. 計算更新半徑：
 <p align="center">
 <a href="https://www.codecogs.com/eqnedit.php?latex=\sigma(t)&space;=&space;\sigma_0exp(-\frac{t}{\lambda})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\sigma(t)&space;=&space;\sigma_0exp(-\frac{t}{\lambda})" title="\sigma(t) = \sigma_0exp(-\frac{t}{\lambda})" /></a></p>
-<p><a href="https://www.codecogs.com/eqnedit.php?latex=\sigma_0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\sigma_0" title="\sigma_0" /></a>為mapping的大小，在<a href="https://www.codecogs.com/eqnedit.php?latex=t&space;=&space;0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?t&space;=&space;0" title="t = 0" /></a> 時，更新半徑會涵蓋整個map</p>
+<p align="center"><a href="https://www.codecogs.com/eqnedit.php?latex=\sigma_0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\sigma_0" title="\sigma_0" /></a>為mapping的大小，在<a href="https://www.codecogs.com/eqnedit.php?latex=t&space;=&space;0" target="_blank"><img src="https://latex.codecogs.com/gif.latex?t&space;=&space;0" title="t = 0" /></a> 時，更新半徑會涵蓋整個map</p>
 	
 <a href="https://www.codecogs.com/eqnedit.php?latex=\lambda" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\lambda" title="\lambda" /></a> 為 time constant</p>
 	
@@ -199,9 +199,9 @@ height=400>
 ```
 值得一提的是使用NN做autoencoder的時候CNN的padding要使用same，否則CNN會讓資料數量下降，讓我們encode之後無法decode回來。
 另外，之所以要train autoencoder而不是只train encoder就好，是為了看我們的model好不好。而在改了幾次model的架構之後，有了不錯的結果
-
-<img align="center" src="https://i.imgur.com/tPMvNjv.png">
-
+<p align="center" >
+<img src="https://i.imgur.com/tPMvNjv.png">
+</p>
 
 上方的表格中，前三張圖片是不在training資料裡面的，因此可以確定我們train的model是有用的，可以在一定的程度下把圖片encode再decode回相似的原圖
 

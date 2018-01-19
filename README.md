@@ -49,17 +49,21 @@ $\Theta(t)$ 為隨著與BMU之間的Euclidean Distance改變，其更新幅度�
   我們試圖將SOFM以視覺化的方式表現出來，除了說明其降維的功效外，也能觀察其將node進行分類並依據種類而聚集的狀態。
   首先設定map為 500 x 500 個 node，每個node的weight皆為隨機的三維變數，接著使用我們事先寫好的training data(0到1之間)進行training。
  train完後將node的weight放大成0到255間，並以RGB的方式，使每一個Node代表一個Pixel，將所有Node輸出成一張pixel 500 x 500的圖片，如下圖：從左而右分別為4筆、10筆、100筆input data。
- 
+ <center>
 <img src="https://i.imgur.com/tHaX3GB.jpg" width=100 height=100>  <img src="https://i.imgur.com/NdHA6vO.jpg" width=100 height=100>  <img src="https://i.imgur.com/e2PuNCh.jpg" width=100 height=100>
-
+</center>
 - 複雜度
 	依此設計來講時間複雜度為 $O(nf)$
 	$n$為node的數量，$f$為feature的數量
 	下面的設計中node數皆為400
 	feature數則盡量接近1000
-## Feature Extraction之方法與結果
+    
+參考網站：[Kohonen's Self Organizing Feature Maps](http://www.ai-junkie.com/ann/som/som1.html)
 
-(Kohonen's Self Organizing Feature Maps)<http://www.ai-junkie.com/ann/som/som1.html>
+[1]Dian Pratiwi,"The Use of Self Organizing Map Method and Feature Selection in Image Database Classification System."2012.
+[2]YangKun,ZhuHong,PanYing-jie,"Human Face Detection Based on SOFM NeuralNetwork."20.
+
+## Feature Extraction之方法與結果
 
 
 ### Color Histogram 
@@ -69,11 +73,15 @@ $\Theta(t)$ 為隨著與BMU之間的Euclidean Distance改變，其更新幅度�
  先將圖片轉成一個三維的資訊，分別為長、寬、以及RGB，然後對每一格根據RGB的值算出一個0~255之間的值，即可求出Color Histogram。
  * 結果
  前方大小為120x80的原圖，後方為經過我們系統得到的最相近的64張圖
- ![](https://i.imgur.com/KD1p9rc.jpg =120x80)<img src="https://i.imgur.com/a1GKDDo.png" width=400 height=400>
-![](https://i.imgur.com/nuHNdob.jpg)<img src="https://i.imgur.com/gYXrUte.png" width=400 height=400>
+<center>
+
+![](https://i.imgur.com/KD1p9rc.jpg) <img src="https://i.imgur.com/a1GKDDo.png" width=400 height=400>
+
+![](https://i.imgur.com/nuHNdob.jpg) <img src="https://i.imgur.com/gYXrUte.png" width=400 height=400>
 ![](https://i.imgur.com/0RTP0zi.jpg)<img
 src="https://i.imgur.com/Bh6eXTg.png" width=400
 height=400>
+</center>
  * 討論
 由以上的結果可以看到，把histogram作為主要的feature取法是不夠具有代表性的，因為只考慮到顏色0~255的數值且無法有效的以此作為判斷圖片內物體的依據，所以我們改尋找其他能夠有如圖片內物體的edge的feature取法。
 
@@ -155,13 +163,13 @@ height=400>
  * 環境：Python 3.6
  * 使用方式：
  * 取feature：
-   執行extraction.py，依據想取的方式去改動main()中使用的function，各functions的功能如下：
+   執行 extraction.py，依據想取的方式去改動main()中使用的function，各functions的功能如下：
 	 ```python
 	 load_and_turn_gray()  # 輸出灰階的color histogram (feature數：256)
 	 load_and_turn_RGB()  # 輸出灰階以及RGB的color histogram (feature數：256\*4=1024)
 	 load_brutal() 	#把所有pixel的資訊extend成一條長長的list (只有一維)
 	 		#格式如下：[[R],[G],[B]] feature數為80\*120\*3=28800
-	load_CNN() : 直接輸出圖片的架構(80\*120\*3的三維陣列，提供autoencoder train)
+	load_CNN() : #直接輸出圖片的架構(80\*120\*3的三維陣列，提供autoencoder train)
 	 ```
  * python3 final.py <command>  command請見以下指令
 ```
@@ -173,5 +181,6 @@ test: Input test data
 ```
 ## 結論
 Unsupervised 的 Image-Retrieval System如果不使用CNN的話，實在很難做出來。畢竟同樣的一個物體，可能會有不同的形狀以及顏色，因此單靠顏色或是邊界偵測效果非常有限。我認為比較好的方法還是透過辨識將照片中的物體辨識出來，再label上去，但這就不是我們這個學期的主要目標了。
-儘管如此，我們還是希望能找個一個兼具效率與準確度的Feature Extraction，從Color Histogram開始，node會被顏色主導，無法有效辨識物體；SURF在比對圖片的扭曲上有著很好的效果，但拿來比對不同圖片時就完全沒有效果；若直接將圖片每個畫素的RGB當作feature，可能會有不錯的效果，但我們的硬體設備實在不足以支撐這樣的運算量；為了解決運算量的問題，我們使用PCA的降維技術，希望在壓低運算量的同時，也能保持資料不失真，但結果仍然是被原圖的顏色主導，無法準確找出我們需要的主題；而在老師的建議後，我們將PCA改成Autoencoder，利用Autoencoder model將圖片encoder取得feature後在使用SOFM進行tri
+儘管如此，我們還是希望能找個一個兼具效率與準確度的Feature Extraction，從Color Histogram開始，node會被顏色主導，無法有效辨識物體；SURF在比對圖片的扭曲上有著很好的效果，但拿來比對不同圖片時就完全沒有效果；若直接將圖片每個畫素的RGB當作feature，可能會有不錯的效果，但我們的硬體設備實在不足以支撐這樣的運算量；為了解決運算量的問題，我們使用PCA的降維技術，希望在壓低運算量的同時，也能保持資料不失真，但結果仍然是被原圖的顏色主導，無法準確找出我們需要的主題；而在老師的建議後，我們將PCA改成Autoencoder，利用Autoencoder model將圖片encoder取得feature後在使用SOFM進行train。但儘管Autoencoder model將圖片decode後，其失真率十分的小，Image Retrieval的效果卻十分的糟糕。
+經歷了一學期的嘗試，我們認知到自己在computer vision上還不夠熟稔，因此不斷在Feature Extraction的部分遇到難題，也就是不斷的"Try and Error"，儘管充滿實驗精神，卻依舊無法直搗問題核心，算是令人比較沮喪的地方，但
 

@@ -124,7 +124,7 @@ height=400>
 由以上的結果可以看到，把histogram作為主要的feature取法是不夠具有代表性的，因為只考慮到顏色0~255的數值且無法有效的以此作為判斷圖片內物體的依據，所以我們改尋找其他能夠有如圖片內物體的edge的feature取法。
 
 - Referance
-- 
+
 Dhanraj R. Dhotre,G. R. Bamnote,"Multilevel Haar Wavelet Transform and Histogram Usage in Content Based Image Retrieval System."2017.
 
 ### Speeded Up Robust Features (SURF)
@@ -158,25 +158,14 @@ Dhanraj R. Dhotre,G. R. Bamnote,"Multilevel Haar Wavelet Transform and Histogram
 <br>
 </p>
 <p align="center" valign="center">
-<img src="https://i.imgur.com/nuHNdob.jpg"> <img src="https://i.imgur.com/gYXrUte.png" width=400 height=400>
+<img src="https://i.imgur.com/35JZpul.jpg"> <img src="https://i.imgur.com/xaAO6TY.png" width=400 height=400>
 <br>
 </p>
 <p align="center" valign="center">
-	<img src="https://i.imgur.com/0RTP0zi.jpg"><img
-src="https://i.imgur.com/Bh6eXTg.png" width=400
-height=400>
-</p>
-![]()<img
-src="" width=400
-height=400>
-
-![]()<img
-src="https://i.imgur.com/xaAO6TY.png" width=400
-height=400>
-
-![](https://i.imgur.com/OoROeKM.jpg)<img
+	<img src="https://i.imgur.com/OoROeKM.jpg"><img
 src="https://i.imgur.com/cgtKTzH.png" width=400
 height=400>
+</p>
 
 ### Autoencoder
 使用autoencoder的原因是因為比起PCA，autoencoder的降維方式對二維的資料比較有用(畢竟也是用CNN達成)。因此在教授的建議下，我們改使用autoencoder。

@@ -40,16 +40,21 @@ W為node之權重
 <a href="https://www.codecogs.com/eqnedit.php?latex=\lambda" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\lambda" title="\lambda" /></a> 為 time constant</p>
 	
 5. 調整該半徑內所有node的權重，使其更接近input vector，越靠近BMU的node其調整幅度更大，更新公式為：
+<p align="center">
 <a href="https://www.codecogs.com/eqnedit.php?latex=W(t&plus;1)&space;=&space;W(t)&space;&plus;&space;\Theta(t)L(t)(V(t)-W(t))$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?W(t&plus;1)&space;=&space;W(t)&space;&plus;&space;\Theta(t)L(t)(V(t)-W(t))$$" title="W(t+1) = W(t) + \Theta(t)L(t)(V(t)-W(t))$$" /></a>
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=L(t)&space;=&space;L_0exp(-\frac{t}{\lambda})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?L(t)&space;=&space;L_0exp(-\frac{t}{\lambda})" title="L(t) = L_0exp(-\frac{t}{\lambda})" /></a>
 
 <a href="https://www.codecogs.com/eqnedit.php?latex=\Theta(t)&space;=&space;exp(-\frac{dist^2}{2\sigma^2(t)})\qquad&space;t&space;=&space;1,2,3,...." target="_blank"><img src="https://latex.codecogs.com/gif.latex?\Theta(t)&space;=&space;exp(-\frac{dist^2}{2\sigma^2(t)})\qquad&space;t&space;=&space;1,2,3,...." title="\Theta(t) = exp(-\frac{dist^2}{2\sigma^2(t)})\qquad t = 1,2,3,...." /></a>
-<a href="https://www.codecogs.com/eqnedit.php?latex=L(t)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?L(t)" title="L(t)" /></a> 為Learning rate，會隨著時間而降低
+</p>
+<p>
+	<a href="https://www.codecogs.com/eqnedit.php?latex=L(t)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?L(t)" title="L(t)" /></a> 為Learning rate，會隨著時間而降低</p>
+<p>
 <a href="https://www.codecogs.com/eqnedit.php?latex=\Theta(t)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\Theta(t)" title="\Theta(t)" /></a> 為隨著與BMU之間的Euclidean Distance改變，其更新幅度的大小，如下圖
-
+</p>
+<p align="center">
 ![](http://www.ai-junkie.com/ann/som/images/graph1.jpg)
-
+</p>
 6. 重複 2. 直到跑完所有epoch
 7. 每個node會將離自己最近的64張training data存入自身
 8. 比較每個node，若任兩個Node中，有50個以上相同的data，則這兩個Node會被分類到同一個cluster，依照上述過程，將所有Node進行分類

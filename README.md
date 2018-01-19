@@ -79,6 +79,7 @@ W為node之權重
 </p>
 
  - 複雜度
+ 
 	依此設計來講時間複雜度為 O(nf)
 	，n為node的數量，f為feature的數量
 	
@@ -119,9 +120,11 @@ height=400>
 </p>
 
  * 討論
+
 由以上的結果可以看到，把histogram作為主要的feature取法是不夠具有代表性的，因為只考慮到顏色0~255的數值且無法有效的以此作為判斷圖片內物體的依據，所以我們改尋找其他能夠有如圖片內物體的edge的feature取法。
 
 - Referance
+- 
 Dhanraj R. Dhotre,G. R. Bamnote,"Multilevel Haar Wavelet Transform and Histogram Usage in Content Based Image Retrieval System."2017.
 
 ### Speeded Up Robust Features (SURF)
@@ -131,6 +134,7 @@ Dhanraj R. Dhotre,G. R. Bamnote,"Multilevel Haar Wavelet Transform and Histogram
 
  
  * 結果與討論
+
  而從下圖中，可以看到兩張完全不同的圖片所對應到的特徵點，其實是有所差異的，沒有辦法完全對應起來。
    ![](https://i.imgur.com/QlN56pN.png)
  當我們仔細去檢視每個Node當中儲存的圖片，發現圖片幾乎是呈現隨機分布，沒有辦法用人眼判讀其分類是否正確，推究原因後，我們認為我們對SURF所取出的特徵點不夠了解，無法判斷每個特徵點是否能代表其物件，但我們時間不足，也只能繼續尋找下一個方法。
@@ -146,13 +150,27 @@ Dhanraj R. Dhotre,G. R. Bamnote,"Multilevel Haar Wavelet Transform and Histogram
 在多元統計分析中，PCA是一種降低資料量的技術。主要是用於在feature降維的時候還是能夠保持feature的代表性。這是通過保留低階主成分，忽略高階主成分做到的。這樣低階成分往往能夠保留住數據的最重要方面，PCA不只可用於電腦視覺辨識，亦可用於語音辨識或其他機器學習領域。
 
 - 作法和結果
+
 透過呼叫scikit-learn裏頭的PCA套件來將28800維的feature降為1024維，並發現結果卻不如預期，下方為透過PCA把feature降維做出來的結果，前方為原圖、後方為透過我們系統拿出的相近的圖，但是卻發現選出來的圖會被原圖有最高比例的顏色給dominate。
 
-![](https://i.imgur.com/4udT1wJ.jpg)<img
-src="https://i.imgur.com/JCZWuLZ.jpg" width=400
+<p align="center" valign="center">
+<img src="https://i.imgur.com/JCZWuLZ.jpg"><img src="https://i.imgur.com/a1GKDDo.png" width=400 height=400>
+<br>
+</p>
+<p align="center" valign="center">
+<img src="https://i.imgur.com/nuHNdob.jpg"> <img src="https://i.imgur.com/gYXrUte.png" width=400 height=400>
+<br>
+</p>
+<p align="center" valign="center">
+	<img src="https://i.imgur.com/0RTP0zi.jpg"><img
+src="https://i.imgur.com/Bh6eXTg.png" width=400
+height=400>
+</p>
+![]()<img
+src="" width=400
 height=400>
 
-![](https://i.imgur.com/35JZpul.jpg)<img
+![]()<img
 src="https://i.imgur.com/xaAO6TY.png" width=400
 height=400>
 

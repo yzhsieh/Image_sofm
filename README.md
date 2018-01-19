@@ -1,4 +1,4 @@
-## Unsupervised Content-based Image Retrieval on SOFM
+# Unsupervised Content-based Image Retrieval on SOFM
 
 <p align="right">
 指導教授：闕志達<br>

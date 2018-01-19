@@ -56,7 +56,7 @@ W為node之權重
 <a href="https://www.codecogs.com/eqnedit.php?latex=\Theta(t)" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\Theta(t)" title="\Theta(t)" /></a> 為隨著與BMU之間的Euclidean Distance改變，其更新幅度的大小，如下圖
 </p>
 <p align="center">
-![](http://www.ai-junkie.com/ann/som/images/graph1.jpg)
+	<img src="http://www.ai-junkie.com/ann/som/images/graph1.jpg"/>
 </p>
 6. 重複 2. 直到跑完所有epoch
 7. 每個node會將離自己最近的64張training data存入自身
@@ -94,7 +94,9 @@ W為node之權重
 <p algin="center">
     
 ![](https://i.imgur.com/KD1p9rc.jpg) <img src="https://i.imgur.com/a1GKDDo.png" width=400 height=400>
+<br>
 ![](https://i.imgur.com/nuHNdob.jpg) <img src="https://i.imgur.com/gYXrUte.png" width=400 height=400>
+<br>
 ![](https://i.imgur.com/0RTP0zi.jpg)<img
 src="https://i.imgur.com/Bh6eXTg.png" width=400
 height=400>
